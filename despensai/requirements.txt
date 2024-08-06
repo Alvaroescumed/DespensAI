@@ -2,3 +2,5 @@ django
 djangorestframework
 openai
 python-dotenv
+mysqlclient
+pillow
