@@ -1,28 +1,45 @@
-import openai
+
+import requests
 import os
 from dotenv import load_dotenv
 
 load_dotenv()
 
-openai.api_key = os.getenv('OPEN_AI_KEY')
+api_key = os.getenv('AI_KEY')
 
 def generate_recipe(ingredients: str, preferences: str) -> str:
     prompt = (
-        f"Crea una receta usando los siguientes ingredientes: {ingredients}"
-        f"Incluye los pasos y tiempo de preparacion"
-        f"Además ten en cuenta las siguientes preferencias y alergias: {preferences}"
+        f"Crea una receta usando los siguientes ingredientes: {ingredients}. "
+        f"Incluye los pasos y tiempo de preparación. "
+        f"Además, ten en cuenta las siguientes preferencias y alergias: {preferences}."
     )
 
-    res = openai.ChatCompletion.create( 
-        model="gpt-4",
-        messages=[
-            {"role": "system", "content" : "Eres un experto asistente culinario"},
-            {"role" : "user", "content" : prompt }
-        ],
-        max_tokens=500,
-        temperature=0.7,
-    )
+    # URL de la API de Hugging Face
+    api_url = "https://api-inference.huggingface.co/models/EleutherAI/gpt-neo-2.7B"
 
-    recipe = res.choices[0].message['content'].strip()
+    headers = {
+        "Authorization": f"Bearer {api_key}"
+    }
 
-    return recipe
+    payload = {
+        "inputs": prompt,
+        "parameters": {
+            "max_length": 500,
+            "num_return_sequences": 1
+        }
+    }
+
+    response = requests.post(api_url, headers=headers, json=payload)
+
+    if response.status_code == 200:
+        result = response.json()
+        return result[0]['generated_text']
+    else:
+        return f"Error: {response.status_code}, {response.text}"
+
+
+if __name__ == "__main__":
+    # Ingredientes y preferencias para la prueba
+    ingredients = "pollo, cebolla, ajo, limón"
+    preferences = "baja en sodio, sin gluten"
+    print(generate_recipe(ingredients, preferences))

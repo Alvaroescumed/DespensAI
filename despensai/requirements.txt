@@ -1,6 +1,7 @@
 django
 djangorestframework
-openai
+transformers
+torch
 python-dotenv
 mysqlclient
 pillow
