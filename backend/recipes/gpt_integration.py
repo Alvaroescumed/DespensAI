@@ -40,6 +40,6 @@ def generate_recipe(ingredients: str, preferences: str) -> str:
 
 if __name__ == "__main__":
     # Ingredientes y preferencias para la prueba
-    ingredients = "pollo, cebolla, ajo, limón"
+    ingredients = "pollo, cebolla, ajo, limón, arroz"
     preferences = "baja en sodio, sin gluten"
     print(generate_recipe(ingredients, preferences))
