@@ -5,3 +5,4 @@ torch
 python-dotenv
 mysqlclient
 pillow
+huggingface-hub 
