@@ -19,7 +19,7 @@ export default function Register (){
         birthDay: new Date(), 
         password: "",
         rpassword: "",
-        bio: ""
+        bio: "",
         pfp: null,
         location: ""
     })

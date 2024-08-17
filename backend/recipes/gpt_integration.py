@@ -9,13 +9,11 @@ api_key = os.getenv('AI_KEY')
 
 def generate_recipe(ingredients: str, preferences: str) -> str:
     prompt = (
-        f"Crea una receta usando los siguientes ingredientes: {ingredients}. "
-        f"Incluye los pasos y tiempo de preparación. "
-        f"Además, ten en cuenta las siguientes preferencias y alergias: {preferences}."
+        f"Crea una receta de cocina usando los siguientes ingredientes: {ingredients}, incluyendo los pasos y el tiempo de preparacion en la respuesta. Ademas ten en cuenta que la receta cumpla {preferences} "
     )
 
-    # URL de la API de Hugging Face
-    api_url = "https://api-inference.huggingface.co/models/EleutherAI/gpt-neo-2.7B"
+    # API endpoint del modelo que vamos a usar de Hugging Face
+    api_url = "https://api-inference.huggingface.co/models/mistralai/Mistral-Nemo-Instruct-2407"
 
     headers = {
         "Authorization": f"Bearer {api_key}"
@@ -24,8 +22,9 @@ def generate_recipe(ingredients: str, preferences: str) -> str:
     payload = {
         "inputs": prompt,
         "parameters": {
-            "max_length": 500,
-            "num_return_sequences": 1
+            "max_length": 100000,
+            "num_return_sequences": 1,
+            "temperature": 0.7 
         }
     }
 
