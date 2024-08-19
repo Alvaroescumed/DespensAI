@@ -11,9 +11,38 @@ export default function App(){
   return(
     <NavigationContainer>
       <Stack.Navigator>
-        <Stack.Screen name="WelcomePage" component={WelcomePage} options={{title: 'Inicio'}} />
-        <Stack.Screen name="Login" component={Login} options={{title: 'Login'}} />
-        <Stack.Screen name="Register" component={Register} options={{title: 'Register'}} />
+        <Stack.Screen 
+          name="WelcomePage" 
+          component={WelcomePage} 
+          options={{
+            title: 'Inicio', 
+            headerShown:true
+          }} 
+        />
+        <Stack.Screen 
+          name="Login" 
+          component={Login} 
+          options={{
+            title: '',
+            headerTransparent: true,
+            headerTintColor: '#6CB089',
+            headerStyle: {
+              backgroundColor: '#fff'
+            }
+            }} 
+        />
+        <Stack.Screen 
+          name="Register" 
+          component={Register} 
+          options={{
+            title: '',
+            headerTransparent: true,
+            headerTintColor: '#6CB089',
+            headerStyle: {
+              backgroundColor: '#fff'
+            }
+            }} 
+          />
       </Stack.Navigator>
     </NavigationContainer>
   )
