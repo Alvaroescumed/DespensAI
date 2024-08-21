@@ -11,7 +11,8 @@ export default function Register (){
     const [showDatePicker, setShowDatePicker] = useState(false)
     const [showCountryPicker, setShowCountryPicker] = useState(false)
     const [countries, setCountries] = useState([])
-    const [error, setError] = useState('')
+    const [error, setError] = useState({})
+    const [isFormValid, setIsFormValid] = useState(true)
     const [userData, setUserData ] = useState({
         fname : "",
         lname : "",
@@ -37,12 +38,49 @@ export default function Register (){
                 }))
                 setCountries(countryList.sort((a, b) => a.name.localeCompare(b.name)))
             } catch(err){
-                console.error("Error fetching countries")
+                console.error("Error fetching countries", err)
             }
         }
 
         fetchCountries()
-    })
+    }, [])
+
+    function validateForm (){
+        let errors = {}
+
+        if(!userData.fname){
+            errors.fname = 'El nombre es obligatorio'
+        }
+        if(!userData.lname){
+            errors.lname = 'El apellido es obligatorio'
+        }
+        if(!userData.username){
+            errors.username = 'El nombre de usuario es obligatorio'
+        }
+        if(!userData.email){
+            errors.email = 'El mail es obligatorio'
+        } else if(!/\S+@\S+\.\S+/.test(userData.email)){
+            errors.email = 'El mail no es valido'
+        }
+        if (!userData.password) {
+            errors.password = 'La contraseña es obligatoria';
+        } else if (userData.password.length < 6) {
+            errors.password = 'La contraseña debe contener más de 6 caracteres';
+        }
+        if(!userData.rpassword){
+              errors.rpassword = 'Por favor repita la contraseña'
+        }else if(userData.rpassword !== userData.password){
+            errors.rpassword = 'Las contraseñas deben coincidir'
+        }
+
+        setError(errors)
+        setIsFormValid(Object.keys(errors).length === 0)
+
+    }
+
+    
+
+    
     async function pickImage(){
         let res = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.All,
@@ -67,13 +105,34 @@ export default function Register (){
         })
     }
 
-    function handleRegister(){
-        if(userData.password !== userData.rpassword){
-            setError('Las contraseñas no coinciden')
-            return
+    function handleSubmit(){
+        
+        validateForm()
+
+        if(isFormValid){
+            console.log('Usuario registrado con exito', userData)
+
+            // quitamos rpassword de userData ya que no la necesitamos para el post
+            const {rpassword, ...dataToSubmit} = userData
+
+            axios.post('https://b4ac-83-53-150-152.ngrok-free.app/api/user/', dataToSubmit)
+                .then(res => {
+                    if(res.data.succes){
+                        console.log('Usuario registrado con exito', res.data.data)
+                        Alert.alert('Usuario Registrado')
+                    } else{
+                        console.log('Error en el registro', res.data.error)
+                        Alert.alert('Error en el proceso de registro')
+                    }
+                })
+                .catch(err => {
+                    console.log('Error en la solicitud', err)
+                    Alert.alert('Error', 'No se puede conectar con el servidor')
+                })
+        } else {
+            console.log('Hay errores en el formulario')
         }
-        Alert.alert('Usuario registrado con exito')
-    }
+    }   
 
     return(
         <View style={styles.container}>
@@ -105,7 +164,7 @@ export default function Register (){
                 placeholder='email'
                 onChangeText={(value) => handleOnChange('email', value)}
             />
-            <Text style={styles.label}>Contraseña</Text>
+            <Text style={styles.label}>Contraseña*</Text>
             <TextInput
                 style={styles.input}
                 value={userData.password}
@@ -113,7 +172,7 @@ export default function Register (){
                 secureTextEntry={true}
                 onChangeText={(value) => handleOnChange('password', value)}
             />
-            <Text style={styles.label}>Repite la contraseña</Text>
+            <Text style={styles.label}>Repite la contraseña*</Text>
             <TextInput
                 style={styles.input}
                 value={userData.rpassword}
@@ -121,9 +180,10 @@ export default function Register (){
                 secureTextEntry={true}
                 onChangeText={(value) => handleOnChange('rpassword', value)}
             />
-            {error ? <Text style={styles.error}>{error}</Text> : null}
             <Text style={styles.label}>Localización</Text>
-            <TouchableOpacity onPress={() => setShowCountryPicker(true)}>
+            <TouchableOpacity
+                style={styles.input}
+                onPress={() => setShowCountryPicker(true)}>
                 <Text
                     style={styles.input}
                 >{userData.location}</Text>
@@ -146,8 +206,8 @@ export default function Register (){
             </Modal>
 
             <Text style={styles.label}>Fecha de nacimiento</Text>
-            <TouchableOpacity onPress={() => setShowDatePicker(true)}>
-                <Text style={styles.input}>{userData.birthDay.toLocaleDateString()}</Text>
+            <TouchableOpacity style={styles.input} onPress={() => setShowDatePicker(true)}>
+                <Text style={styles.buttonText}>{userData.birthDay.toLocaleDateString()}</Text>
             </TouchableOpacity>
 
             {showDatePicker && (
@@ -167,9 +227,23 @@ export default function Register (){
             <Text style={styles.label}>Imagen de perfil</Text>
             <Button title='Selecciona tu imagen de perfil' onPress={pickImage} />
 
-            <TouchableOpacity style={styles.button} onPress={handleRegister}>
+            
+            <TouchableOpacity 
+                style={[styles.button, { opacity: isFormValid ? 1 : 0.5 }]}
+                disabled={!isFormValid}
+                onPress={handleSubmit}>
                 <Text style={styles.buttonText}>Registrarse</Text>
             </TouchableOpacity>
+
+            {Object.keys(error).length > 0 && (
+            <View style={styles.errorContainer}>
+                {Object.keys(error).map((key) => (
+                    <Text key={key} style={styles.error}>
+                        {error[key]}
+                    </Text>
+                ))}
+            </View>
+        )}
         </View> 
     )
 }
@@ -179,6 +253,7 @@ const styles = StyleSheet.create({
         flex: 1,
         padding: 16,
         backgroundColor: '#fff',
+        paddingTop: 90
     },
     row: {
         flexDirection: 'row',
