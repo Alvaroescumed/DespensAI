@@ -15,7 +15,7 @@ export default function App(){
           name="WelcomePage" 
           component={WelcomePage} 
           options={{
-            title: 'Inicio', 
+            title: '', 
             headerShown:true
           }} 
         />

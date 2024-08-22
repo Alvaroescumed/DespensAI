@@ -1,7 +1,10 @@
-from rest_framework import generics
+from rest_framework import generics, status
 from rest_framework.views import APIView
 from .models import *
 from .serializers import *
+from rest_framework.authtoken.models import Token
+from django.contrib.auth import authenticate
+from rest_framework.response import Response
 
 
 # --------- Recipes -------------
@@ -23,6 +26,31 @@ class UserListCreate(generics.ListCreateAPIView):
 class UserRetriveUpdate(generics.RetrieveUpdateDestroyAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
+
+class LoginView(APIView):
+
+    def post(self, request):
+        email = request.data.get('email')
+        password = request.data.get('password')
+
+        user = authenticate(username=email, password=password)
+
+        if user is not None:
+
+            token, created = Token.objects.get_or_create(user=user)
+            return Response({
+                'success': True,
+                'token': token.key,
+                'message': 'Inicio de sesion correcto'
+            }, status=status.HTTP_200_OK)
+        
+        else:
+            return Response({
+                'success':False,
+                'message': 'Correo o contraseña incorrectos'
+            }, status=status.HTTP_400_BAD_REQUEST)
+        
+
 
 # --------  INGREDIENTS ----------------
 

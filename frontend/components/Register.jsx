@@ -14,11 +14,11 @@ export default function Register (){
     const [error, setError] = useState({})
     const [isFormValid, setIsFormValid] = useState(true)
     const [userData, setUserData ] = useState({
-        fname : "",
-        lname : "",
+        first_name : "",
+        last_name : "",
         email: "",
         username: "",
-        birthDay: new Date(), 
+        birth_day: new Date(), 
         password: "",
         rpassword: "",
         bio: "",
@@ -48,11 +48,11 @@ export default function Register (){
     function validateForm (){
         let errors = {}
 
-        if(!userData.fname){
-            errors.fname = 'El nombre es obligatorio'
+        if(!userData.first_name){
+            errors.first_name = 'El nombre es obligatorio'
         }
-        if(!userData.lname){
-            errors.lname = 'El apellido es obligatorio'
+        if(!userData.last_name){
+            errors.last_name = 'El apellido es obligatorio'
         }
         if(!userData.username){
             errors.username = 'El nombre de usuario es obligatorio'
@@ -139,16 +139,16 @@ export default function Register (){
             <Text style={styles.label}>Nombre*</Text>
             <TextInput
                 style={styles.input}
-                value={userData.fname}
+                value={userData.first_name}
                 placeholder='Nombre'
-                onChangeText={(value) => handleOnChange('fname', value)}
+                onChangeText={(value) => handleOnChange('first_name', value)}
             />
             <Text style={styles.label}>Apellido*</Text>
             <TextInput
                 style={styles.input}
-                value={userData.lname}
+                value={userData.last_name}
                 placeholder='Apellidos'
-                onChangeText={(value) => handleOnChange('lname', value)}
+                onChangeText={(value) => handleOnChange('last_name', value)}
             />
             <Text style={styles.label}>Nombre de Usuario*</Text>
             <TextInput
@@ -207,18 +207,18 @@ export default function Register (){
 
             <Text style={styles.label}>Fecha de nacimiento</Text>
             <TouchableOpacity style={styles.input} onPress={() => setShowDatePicker(true)}>
-                <Text style={styles.buttonText}>{userData.birthDay.toLocaleDateString()}</Text>
+                <Text style={styles.buttonText}>{userData.birth_day.toLocaleDateString()}</Text>
             </TouchableOpacity>
 
             {showDatePicker && (
                 <DateTimePicker
-                    value={userData.birthDay}
+                    value={userData.birth_day}
                     mode='date'
                     display='default'
                     onChange={(e, selectedDate) =>{
                         setShowDatePicker(false)
                         if (selectedDate) {
-                            handleOnChange('birthDay', selectedDate)
+                            handleOnChange('birth_day', selectedDate)
                         }
                     }}
                 />
