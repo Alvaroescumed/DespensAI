@@ -6,3 +6,4 @@ python-dotenv
 mysqlclient
 pillow
 huggingface-hub 
+django-cors-headers

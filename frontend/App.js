@@ -1,8 +1,9 @@
 import {NavigationContainer} from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
-import WelcomePage from './components/WelcomePage'
-import Login from './components/Login'
-import Register from './components/Register'
+import WelcomePage from './pages/WelcomePage'
+import Login from './pages/Login'
+import Register from './pages/Register'
+import Inicio from './pages/Inicio'
 
 const Stack = createNativeStackNavigator()
 
@@ -34,6 +35,18 @@ export default function App(){
         <Stack.Screen 
           name="Register" 
           component={Register} 
+          options={{
+            title: '',
+            headerTransparent: true,
+            headerTintColor: '#6CB089',
+            headerStyle: {
+              backgroundColor: '#fff'
+            }
+            }} 
+          />
+          <Stack.Screen 
+          name="Inicio" 
+          component={Inicio} 
           options={{
             title: '',
             headerTransparent: true,

@@ -9,6 +9,7 @@ export default function WelcomePage (){
             <Text>Bienvenido a DespensAI</Text>
             <Button title="Iniciar Sesión" onPress={() => navigation.navigate('Login')}/>
             <Button title="Registrarse" onPress={() => navigation.navigate('Register')}/>
+            <Button title="Inicio" onPress={() => navigation.navigate('Inicio')}/>
         </View> 
     )
 }

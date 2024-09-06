@@ -16,20 +16,21 @@ export default function Login (){
             return;
         }
     
-        axios.post('https://f34b-83-53-150-152.ngrok-free.app/api/login/', { username, password })
+        axios.post('http://127.0.0.1:8000/api/login/', { username, password })
             .then(response => {
                 if (response.data.success) {
-                    Alert.alert('Éxito', 'Inicio de sesión exitoso');
-                    const token = response.data.token;
-                    // Aquí navegas a la pantalla principal, por ejemplo 'Home'
-                    navigation.navigate('Home');  
+                    Alert.alert('Éxito', 'Inicio de sesión exitoso')
+                    const token = response.data.token
+                    navigation.navigate('Inicio'); 
                 } else {
-                    Alert.alert('Error', response.data.message);
+                    Alert.alert('Error', response.data.message)
+                    console.log(response.data.message)
+
                 }
             })
             .catch(error => {
-                console.error('Error en la solicitud', error);
-                Alert.alert('Error', 'No se pudo conectar con el servidor');
+                console.log('Error en la solicitud', error)
+                Alert.alert('Error', 'No se pudo conectar con el servidor')
             });
     }
 

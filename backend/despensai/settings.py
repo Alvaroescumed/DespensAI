@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "recipes",
     "openai",
+    "corsheaders" 
 ]
 
 MIDDLEWARE = [
@@ -59,8 +60,14 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
 ]
 
+# Permitimos el origen de nuestro front
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:8081",
+]
 
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',

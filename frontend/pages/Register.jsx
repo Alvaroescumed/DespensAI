@@ -115,14 +115,16 @@ export default function Register (){
             // quitamos rpassword de userData ya que no la necesitamos para el post
             const {rpassword, ...dataToSubmit} = userData
 
-            axios.post('https://b4ac-83-53-150-152.ngrok-free.app/api/user/', dataToSubmit)
+            axios.post('http://127.0.0.1:8000/api/user/', dataToSubmit)
                 .then(res => {
                     if(res.data.succes){
                         console.log('Usuario registrado con exito', res.data.data)
                         Alert.alert('Usuario Registrado')
                     } else{
-                        console.log('Error en el registro', res.data.error)
-                        Alert.alert('Error en el proceso de registro')
+                        console.log('Response data:', error.response.data);
+                        console.log('Status:', error.response.status);
+                        console.log('Headers:', error.response.headers);
+                        Alert.alert('Error', error.response.data.message || 'Solicitud incorrecta');
                     }
                 })
                 .catch(err => {
@@ -230,7 +232,6 @@ export default function Register (){
             
             <TouchableOpacity 
                 style={[styles.button, { opacity: isFormValid ? 1 : 0.5 }]}
-                disabled={!isFormValid}
                 onPress={handleSubmit}>
                 <Text style={styles.buttonText}>Registrarse</Text>
             </TouchableOpacity>

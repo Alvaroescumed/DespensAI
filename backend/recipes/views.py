@@ -30,10 +30,10 @@ class UserRetriveUpdate(generics.RetrieveUpdateDestroyAPIView):
 class LoginView(APIView):
 
     def post(self, request):
-        email = request.data.get('email')
+        username = request.data.get('username')
         password = request.data.get('password')
 
-        user = authenticate(username=email, password=password)
+        user = authenticate(username=username, password=password)
 
         if user is not None:
 
