@@ -4,6 +4,7 @@ import WelcomePage from './pages/WelcomePage'
 import Login from './pages/Login'
 import Register from './pages/Register'
 import Inicio from './pages/Inicio'
+import NewRecipe from './pages/NewRecipe'
 
 const Stack = createNativeStackNavigator()
 
@@ -20,6 +21,15 @@ export default function App(){
             headerShown:true
           }} 
         />
+        <Stack.Screen 
+          name="NewRecipe" 
+          component={NewRecipe} 
+          options={{
+            title: '', 
+            headerShown:true
+          }} 
+        />
+        
         <Stack.Screen 
           name="Login" 
           component={Login} 

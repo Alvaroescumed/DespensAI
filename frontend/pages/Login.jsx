@@ -7,7 +7,6 @@ export default function Login (){
 
     const [username, setUsername ] = useState('')
     const [password, setPassword] = useState('')
-
     const navigation = useNavigation()
 
     const handleLogin = () => {

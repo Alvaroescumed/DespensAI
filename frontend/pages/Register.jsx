@@ -5,26 +5,49 @@ import {Picker} from '@react-native-picker/picker'
 import DateTimePicker from '@react-native-community/datetimepicker'
 import * as ImagePicker from 'expo-image-picker'
 import axios from 'axios'
+import { useForm, Controller } from 'react-hook-form'
 
+function FormField({ control, name, label, rules, placeholder, secureTextEntry }) {
+    return (
+      <View style={styles.inputContainer}>
+        <Text style={styles.label}>{label}</Text>
+        <Controller
+          control={control}
+          name={name}
+          rules={rules}
+          render={({ field: { onChange, value } }) => (
+            <TextInput
+              style={styles.input}
+              placeholder={placeholder}
+              secureTextEntry={secureTextEntry}
+              value={value}
+              onChangeText={onChange}
+            />
+          )}
+        />
+      </View>
+    )
+  }
 export default function Register (){
 
     const [showDatePicker, setShowDatePicker] = useState(false)
     const [showCountryPicker, setShowCountryPicker] = useState(false)
     const [countries, setCountries] = useState([])
-    const [error, setError] = useState({})
-    const [isFormValid, setIsFormValid] = useState(true)
-    const [userData, setUserData ] = useState({
-        first_name : "",
-        last_name : "",
-        email: "",
-        username: "",
-        birth_day: new Date(), 
-        password: "",
-        rpassword: "",
-        bio: "",
-        pfp: null,
-        location: ""
-    })
+    const [pfp, setPfp] = useState(null)
+    
+    const { control, handleSubmit, setValue, watch, formState: { errors } } = useForm({
+        defaultValues: {
+          first_name: '',
+          last_name: '',
+          email: '',
+          username: '',
+          birth_day: new Date(),
+          password: '',
+          rpassword: '',
+          bio: '',
+          location: ''
+        }
+      })
 
     const navigation = useNavigation()
 
@@ -45,42 +68,7 @@ export default function Register (){
         fetchCountries()
     }, [])
 
-    function validateForm (){
-        let errors = {}
-
-        if(!userData.first_name){
-            errors.first_name = 'El nombre es obligatorio'
-        }
-        if(!userData.last_name){
-            errors.last_name = 'El apellido es obligatorio'
-        }
-        if(!userData.username){
-            errors.username = 'El nombre de usuario es obligatorio'
-        }
-        if(!userData.email){
-            errors.email = 'El mail es obligatorio'
-        } else if(!/\S+@\S+\.\S+/.test(userData.email)){
-            errors.email = 'El mail no es valido'
-        }
-        if (!userData.password) {
-            errors.password = 'La contraseña es obligatoria';
-        } else if (userData.password.length < 6) {
-            errors.password = 'La contraseña debe contener más de 6 caracteres';
-        }
-        if(!userData.rpassword){
-              errors.rpassword = 'Por favor repita la contraseña'
-        }else if(userData.rpassword !== userData.password){
-            errors.rpassword = 'Las contraseñas deben coincidir'
-        }
-
-        setError(errors)
-        setIsFormValid(Object.keys(errors).length === 0)
-
-    }
-
-    
-
-    
+   
     async function pickImage(){
         let res = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.All,
@@ -90,162 +78,146 @@ export default function Register (){
         })
 
         if(!res.canceled){
-            setUserData( prevState => ({
-                ...prevState,
-                pfp: res.assets[0].uri
-            }))
+            setPfp(res.assets[0].uri)
         }
     }
 
 
-    function handleOnChange(name, value){
-        setUserData({
-            ...userData,
-            [name]: value,
-        })
-    }
-
-    function handleSubmit(){
+    function onSubmit(data){
         
-        validateForm()
-
-        if(isFormValid){
-            console.log('Usuario registrado con exito', userData)
-
-            // quitamos rpassword de userData ya que no la necesitamos para el post
-            const {rpassword, ...dataToSubmit} = userData
-
-            axios.post('http://127.0.0.1:8000/api/user/', dataToSubmit)
-                .then(res => {
-                    if(res.data.succes){
-                        console.log('Usuario registrado con exito', res.data.data)
-                        Alert.alert('Usuario Registrado')
-                    } else{
-                        console.log('Response data:', error.response.data);
-                        console.log('Status:', error.response.status);
-                        console.log('Headers:', error.response.headers);
-                        Alert.alert('Error', error.response.data.message || 'Solicitud incorrecta');
-                    }
-                })
-                .catch(err => {
-                    console.log('Error en la solicitud', err)
-                    Alert.alert('Error', 'No se puede conectar con el servidor')
-                })
-        } else {
-            console.log('Hay errores en el formulario')
+        if (data.password !== data.rpassword) {
+            Alert.alert('Error', 'Las contraseñas no coinciden')
+            return
         }
-    }   
+
+        const dataToSubmit = { ...data, pfp }
+
+        axios.post('http://127.0.0.1:8000/api/user/', dataToSubmit)
+            .then((res) => {
+            if (res.data.success) {
+                Alert.alert('Usuario registrado con éxito');
+            } else {
+                Alert.alert('Error', res.data.message || 'Solicitud incorrecta');
+            }
+            })
+            .catch((err) => {
+            console.error('Error en la solicitud', err);
+            Alert.alert('Error', 'No se puede conectar con el servidor');
+            })
+    }
+
 
     return(
         <View style={styles.container}>
-            <Text style={styles.label}>Nombre*</Text>
-            <TextInput
-                style={styles.input}
-                value={userData.first_name}
-                placeholder='Nombre'
-                onChangeText={(value) => handleOnChange('first_name', value)}
-            />
-            <Text style={styles.label}>Apellido*</Text>
-            <TextInput
-                style={styles.input}
-                value={userData.last_name}
-                placeholder='Apellidos'
-                onChangeText={(value) => handleOnChange('last_name', value)}
-            />
-            <Text style={styles.label}>Nombre de Usuario*</Text>
-            <TextInput
-                style={styles.input}
-                value={userData.username}
-                placeholder='Username'
-                onChangeText={(value) => handleOnChange('username', value)}
-            />
-            <Text style={styles.label}>Correo*</Text>
-            <TextInput
-                style={styles.input}
-                value={userData.email}
-                placeholder='email'
-                onChangeText={(value) => handleOnChange('email', value)}
-            />
-            <Text style={styles.label}>Contraseña*</Text>
-            <TextInput
-                style={styles.input}
-                value={userData.password}
-                placeholder='contraseña'
-                secureTextEntry={true}
-                onChangeText={(value) => handleOnChange('password', value)}
-            />
-            <Text style={styles.label}>Repite la contraseña*</Text>
-            <TextInput
-                style={styles.input}
-                value={userData.rpassword}
-                placeholder='repite la contraseña'
-                secureTextEntry={true}
-                onChangeText={(value) => handleOnChange('rpassword', value)}
-            />
-            <Text style={styles.label}>Localización</Text>
-            <TouchableOpacity
-                style={styles.input}
-                onPress={() => setShowCountryPicker(true)}>
-                <Text
-                    style={styles.input}
-                >{userData.location}</Text>
-            </TouchableOpacity>
-
-            <Modal visible={showCountryPicker} transparent={true} animationType="slide">
-                <View style={styles.pickerContainer}>
-                    <Picker 
-                        selectedValue={userData.location}
-                        onValueChange={(value) => {
-                            handleOnChange('location', value)
-                            setShowCountryPicker(false)
-                        }}>
-                        {countries.map((country) => (
-                            <Picker.Item key={country.code} label={country.name} value={country.name} />
-                        ))}
-                    </Picker>
-                    <Button title="Cerrar" onPress={() => setShowCountryPicker(false)} />
-                </View>
-            </Modal>
-
-            <Text style={styles.label}>Fecha de nacimiento</Text>
-            <TouchableOpacity style={styles.input} onPress={() => setShowDatePicker(true)}>
-                <Text style={styles.buttonText}>{userData.birth_day.toLocaleDateString()}</Text>
-            </TouchableOpacity>
-
-            {showDatePicker && (
-                <DateTimePicker
-                    value={userData.birth_day}
-                    mode='date'
-                    display='default'
-                    onChange={(e, selectedDate) =>{
-                        setShowDatePicker(false)
-                        if (selectedDate) {
-                            handleOnChange('birth_day', selectedDate)
-                        }
-                    }}
-                />
-            )}
-
-            <Text style={styles.label}>Imagen de perfil</Text>
-            <Button title='Selecciona tu imagen de perfil' onPress={pickImage} />
-
-            
-            <TouchableOpacity 
-                style={[styles.button, { opacity: isFormValid ? 1 : 0.5 }]}
-                onPress={handleSubmit}>
-                <Text style={styles.buttonText}>Registrarse</Text>
-            </TouchableOpacity>
-
-            {Object.keys(error).length > 0 && (
-            <View style={styles.errorContainer}>
-                {Object.keys(error).map((key) => (
-                    <Text key={key} style={styles.error}>
-                        {error[key]}
-                    </Text>
-                ))}
-            </View>
+        {/* Usando el componente FormField para los campos de texto */}
+        <FormField
+          control={control}
+          name="first_name"
+          label="Nombre*"
+          placeholder="Nombre"
+          rules={{ required: 'El nombre es obligatorio' }}
+        />
+        {errors.first_name && <Text style={styles.error}>{errors.first_name.message}</Text>}
+  
+        <FormField
+          control={control}
+          name="last_name"
+          label="Apellido*"
+          placeholder="Apellidos"
+          rules={{ required: 'El apellido es obligatorio' }}
+        />
+        {errors.last_name && <Text style={styles.error}>{errors.last_name.message}</Text>}
+  
+        <FormField
+          control={control}
+          name="username"
+          label="Nombre de Usuario*"
+          placeholder="Username"
+          rules={{ required: 'El nombre de usuario es obligatorio' }}
+        />
+        {errors.username && <Text style={styles.error}>{errors.username.message}</Text>}
+  
+        <FormField
+          control={control}
+          name="email"
+          label="Correo*"
+          placeholder="email"
+          rules={{
+            required: 'El mail es obligatorio',
+            pattern: { value: /\S+@\S+\.\S+/, message: 'El mail no es válido' }
+          }}
+        />
+        {errors.email && <Text style={styles.error}>{errors.email.message}</Text>}
+  
+        <FormField
+          control={control}
+          name="password"
+          label="Contraseña*"
+          placeholder="Contraseña"
+          secureTextEntry={true}
+          rules={{ required: 'La contraseña es obligatoria', minLength: { value: 6, message: 'Debe tener al menos 6 caracteres' } }}
+        />
+        {errors.password && <Text style={styles.error}>{errors.password.message}</Text>}
+  
+        <FormField
+          control={control}
+          name="rpassword"
+          label="Repite la contraseña*"
+          placeholder="Repite la contraseña"
+          secureTextEntry={true}
+          rules={{ required: 'Repite la contraseña' }}
+        />
+        {errors.rpassword && <Text style={styles.error}>{errors.rpassword.message}</Text>}
+  
+        <Text style={styles.label}>Localización</Text>
+        <TouchableOpacity style={styles.input} onPress={() => setShowCountryPicker(true)}>
+          <Text>{watch('location')}</Text>
+        </TouchableOpacity>
+  
+        <Modal visible={showCountryPicker} transparent={true} animationType="slide">
+          <View style={styles.pickerContainer}>
+            <Picker
+              selectedValue={watch('location')}
+              onValueChange={(value) => {
+                setValue('location', value);
+                setShowCountryPicker(false);
+              }}
+            >
+              {countries.map((country) => (
+                <Picker.Item key={country.code} label={country.name} value={country.name} />
+              ))}
+            </Picker>
+            <Button title="Cerrar" onPress={() => setShowCountryPicker(false)} />
+          </View>
+        </Modal>
+  
+        <Text style={styles.label}>Fecha de nacimiento</Text>
+        <TouchableOpacity style={styles.input} onPress={() => setShowDatePicker(true)}>
+          <Text>{watch('birth_day').toLocaleDateString()}</Text>
+        </TouchableOpacity>
+  
+        {showDatePicker && (
+          <DateTimePicker
+            value={watch('birth_day')}
+            mode="date"
+            display="default"
+            onChange={(e, selectedDate) => {
+              setShowDatePicker(false);
+              if (selectedDate) {
+                setValue('birth_day', selectedDate);
+              }
+            }}
+          />
         )}
-        </View> 
+  
+        <Text style={styles.label}>Imagen de perfil</Text>
+        <Button title="Selecciona tu imagen de perfil" onPress={pickImage} />
+  
+        <TouchableOpacity style={styles.button} onPress={handleSubmit(onSubmit)}>
+          <Text style={styles.buttonText}>Registrarse</Text>
+        </TouchableOpacity>
+      </View>
+  
     )
 }
 
