@@ -34,7 +34,7 @@ DEBUG = True
 ALLOWED_HOSTS = [
     '127.0.0.1',
     'localhost',
-    'f34b-83-53-150-152.ngrok-free.app',  
+    '9329-83-53-149-113.ngrok-free.app',  
 ]
 
 # Application definition
@@ -49,7 +49,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "recipes",
     "openai",
-    "corsheaders" 
+    "corsheaders", 
 ]
 
 MIDDLEWARE = [
@@ -65,9 +65,7 @@ MIDDLEWARE = [
 ]
 
 # Permitimos el origen de nuestro front
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:8081",
-]
+CORS_ALLOW_ALL_ORIGINS = True
 
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',

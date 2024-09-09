@@ -15,7 +15,7 @@ export default function Login (){
             return;
         }
     
-        axios.post('http://127.0.0.1:8000/api/login/', { username, password })
+        axios.post('https://9329-83-53-149-113.ngrok-free.app/api/login/', { username, password })
             .then(response => {
                 if (response.data.success) {
                     Alert.alert('Éxito', 'Inicio de sesión exitoso')

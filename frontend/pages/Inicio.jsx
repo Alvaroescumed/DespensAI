@@ -3,14 +3,12 @@ import axios from 'axios'
 import { useEffect, useState } from 'react'
 import { View, Text, TextInput, FlatList, StyleSheet, TouchableOpacity } from "react-native"
 
-
-
-const apiKey = '975618fd6354e9885e7aa149af5c287'
  export default function Inicio(){
 
     const [ingredients, setIngredients] = useState([])
     const [filteredIngredients, setFilteredIngredients] = useState([])
     const [searchQuery, setSearchQuery] = useState('')
+    const [selectedIngredients, setSelectedIngredients] = useState([])
 
     const navigation = useNavigation()
 
@@ -18,13 +16,12 @@ const apiKey = '975618fd6354e9885e7aa149af5c287'
 
         async function getIngredients(){
             try{
-                const res = await axios.get(`https://api.spoonacular.com/recipes/complexSearch?apiKey=${apiKey}&includeIngredients=true`) 
-                const ingredientsList = res.data.results.map(recipe => recipe.ingredients).flat()
-
-                setIngredients(ingredientsList)
-                setFilteredIngredients(ingredientsList)
-
-                console.log(ingredients)
+                const response = await axios.get('https://www.themealdb.com/api/json/v1/1/list.php?i=list');
+                const ingredientList = response.data.meals.map((meal) => ({
+                  id: meal.idIngredient,
+                  name: meal.strIngredient,
+                }))
+                setIngredients(ingredientList)
 
             } catch(err){
                 console.log(err)
@@ -35,11 +32,28 @@ const apiKey = '975618fd6354e9885e7aa149af5c287'
     }, [])
 
     useEffect(() => {
-        const filtered = ingredients.filter(ingredient =>
-            ingredient.toLowerCase().includes(searchQuery.toLowerCase())
-        );
-        setFilteredIngredients(filtered);
+        const filtered = ingredients.filter((ingredients) => 
+            ingredients.name.toLowerCase().includes(searchQuery.toLowerCase())
+        )
+
+        setFilteredIngredients(filtered)
     }, [searchQuery, ingredients])
+
+    function addIngredient(ingredient){
+        if (!selectedIngredients.some((item) => item.id === ingredient.id)) {
+            setSelectedIngredients((prev) => [...prev, ingredient])
+            setSearchQuery('')
+        }
+    }
+
+    function deleteIngredient(ingredientToRemove){
+
+        const updatedIngredients = selectedIngredients.filter(
+            (ingredient) => ingredient.name !== ingredientToRemove.name
+        )
+
+        setSelectedIngredients(updatedIngredients)
+    }
 
     function addRecipe(){
         navigation.navigate('NewRecipe')
@@ -48,19 +62,43 @@ const apiKey = '975618fd6354e9885e7aa149af5c287'
     return(
         <View style={styles.container}>
             <TextInput
-                
+                style={styles.input}
                 placeholder="Search ingredients..."
                 value={searchQuery}
                 onChangeText={setSearchQuery}
             />
-            <FlatList
-                data={filteredIngredients}
-                keyExtractor={(item, index) => index.toString()}
-                renderItem={({ item }) => <Text>{item}</Text>}
-            />
+
+            {/* Mostramos la lista en caso de que se añada un parametro de busqueda */}
+            {searchQuery.length > 0 && (
+                <FlatList
+                    style={styles.dropdown}
+                    data={filteredIngredients}
+                    keyExtractor={(item) => item.id.toString()}
+                    renderItem={({ item }) => 
+                        <TouchableOpacity 
+                            style={styles.dropdownItem}
+                            onPress={() => addIngredient(item)}>
+                                <Text>{item.name}</Text>
+                        </TouchableOpacity>}
+                />
+            )}
+
+            <View style={styles.selectedContainer}>
+                <Text>Ingredientes Seleccionados:</Text>
+                {selectedIngredients.map((ingredient) => (
+                    <TouchableOpacity
+                        key={ingredient.id} 
+                        onPress={() => deleteIngredient(ingredient)}
+                    >
+                        <Text style={styles.selectedItem}>
+                            {ingredient.name}
+                        </Text>
+                    </TouchableOpacity>
+                ))}
+            </View>
 
             <TouchableOpacity 
-                // style={styles.button}
+                style={styles.button}
                 onPress={addRecipe}>
                 <Text>Nueva Receta</Text>
             </TouchableOpacity>
@@ -84,9 +122,29 @@ const styles = StyleSheet.create({
         backgroundColor: '#f9f9f9',
         marginVertical: 10
     },
+    dropdown: {
+        maxHeight: 200, 
+        borderColor: '#ccc',
+        borderWidth: 1,
+        borderRadius: 8,
+        marginTop: 5,
+        backgroundColor: '#fff'
+    },
+    dropdownItem: {
+        padding: 10,
+        borderBottomWidth: 1,
+        borderBottomColor: '#eee',
+    },
     inputsContainer: {
         paddingTop: '40%',
         paddingHorizontal: 20
+    },
+    selectedContainer: {
+        marginVertical: 10,
+    },
+    selectedItem: {
+        fontSize: 16,
+        color: '#333',
     },
     button: {
         backgroundColor: '#6CB089',

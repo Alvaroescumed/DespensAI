@@ -8,49 +8,49 @@ import {Picker} from '@react-native-picker/picker'
 
 export default function NewRecipe(){
 
-    const [ingredients, setIngredients] = useState([])
-    const { control, handleSubmit, setValue, formState: { errors } } = useForm({
-        defaultValues: {
-          name: '',
-          instructions: '',
-          cook_time: '',
-          portions: 1,
-          ingredients: [],
-        }
-      })
+  const [ingredients, setIngredients] = useState([])
+  const { control, handleSubmit, setValue, formState: { errors } } = useForm({
+      defaultValues: {
+        name: '',
+        instructions: '',
+        cook_time: '',
+        portions: 1,
+        ingredients: [],
+      }
+    })
 
-      useEffect(() => {
-        async function fetchIngredients() {
-          try {
-            const response = await axios.get('https://www.themealdb.com/api/json/v1/1/list.php?i=list');
-            const ingredientList = response.data.meals.map((meal) => ({
-              id: meal.idIngredient,
-              name: meal.strIngredient,
-            }));
-            setIngredients(ingredientList);  // Guardamos los ingredientes
-          } catch (error) {
-            console.error('Error al obtener los ingredientes:', error);
-          }
-        }
-    
-        fetchIngredients();  // Llamamos a la función al montar el componente
-      }, [])
-
-      async function onSubmit(data) {
-        try {
-            const response = await axios.post('https://localhost:8000/api/recipes', data)
-            if (response.status === 201) {
-              alert('Receta creada con éxito')
-            } else {
-              alert('Error al crear la receta')
-            }
-          } catch (error) {
-            console.error('Error al enviar los datos de la receta:', error)
-            alert('Error al conectar con el servidor')
-        }
+  useEffect(() => {
+    async function fetchIngredients() {
+      try {
+        const response = await axios.get('https://www.themealdb.com/api/json/v1/1/list.php?i=list');
+        const ingredientList = response.data.meals.map((meal) => ({
+          id: meal.idIngredient,
+          name: meal.strIngredient,
+        }))
+        setIngredients(ingredientList)
+      } catch (error) {
+        console.error('Error al obtener los ingredientes:', error)
+      }
     }
 
-    return(   
+    fetchIngredients() 
+  }, [])
+
+  async function onSubmit(data) {
+    try {
+        const response = await axios.post('https://localhost:8000/api/recipes', data)
+        if (response.status === 201) {
+          alert('Receta creada con éxito')
+        } else {
+          alert('Error al crear la receta')
+        }
+      } catch (error) {
+        console.error('Error al enviar los datos de la receta:', error)
+        alert('Error al conectar con el servidor')
+    }
+  }
+
+  return(   
     <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.label}>Nombre de la receta</Text>
       <Controller
@@ -143,7 +143,7 @@ export default function NewRecipe(){
         <Text style={styles.buttonText}>Crear receta</Text>
       </TouchableOpacity>
     </ScrollView>
-    )
+  )
 }
 
 
