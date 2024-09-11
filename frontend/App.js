@@ -5,6 +5,7 @@ import Login from './pages/Login'
 import Register from './pages/Register'
 import Inicio from './pages/Inicio'
 import NewRecipe from './pages/NewRecipe'
+import AIRecipe from './pages/AIRecipe'
 
 const Stack = createNativeStackNavigator()
 
@@ -57,6 +58,18 @@ export default function App(){
           <Stack.Screen 
           name="Inicio" 
           component={Inicio} 
+          options={{
+            title: '',
+            headerTransparent: true,
+            headerTintColor: '#6CB089',
+            headerStyle: {
+              backgroundColor: '#fff'
+            }
+            }} 
+          />
+          <Stack.Screen 
+          name="AIRecipe" 
+          component={AIRecipe} 
           options={{
             title: '',
             headerTransparent: true,

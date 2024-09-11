@@ -26,7 +26,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-y=zdbw*q&3o7froi6_62z_h0-msz87ejhnijx1(7&q69kl@v!s"
+SECRET_KEY =  os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -35,6 +35,7 @@ ALLOWED_HOSTS = [
     '127.0.0.1',
     'localhost',
     '9329-83-53-149-113.ngrok-free.app',  
+    '192.168.1.43'
 ]
 
 # Application definition
@@ -50,6 +51,7 @@ INSTALLED_APPS = [
     "recipes",
     "openai",
     "corsheaders", 
+    'rest_framework.authtoken',
 ]
 
 MIDDLEWARE = [

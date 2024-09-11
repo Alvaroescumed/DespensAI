@@ -16,7 +16,7 @@ import { View, Text, TextInput, FlatList, StyleSheet, TouchableOpacity } from "r
 
         async function getIngredients(){
             try{
-                const response = await axios.get('https://www.themealdb.com/api/json/v1/1/list.php?i=list');
+                const response = await axios.get('https://www.themealdb.com/api/json/v1/1/list.php?i=list')
                 const ingredientList = response.data.meals.map((meal) => ({
                   id: meal.idIngredient,
                   name: meal.strIngredient,
@@ -59,6 +59,15 @@ import { View, Text, TextInput, FlatList, StyleSheet, TouchableOpacity } from "r
         navigation.navigate('NewRecipe')
     }
 
+    function generate() {
+
+        const ingredientNames = selectedIngredients.map((ingredient) => ingredient.name);
+
+        navigation.navigate('AIRecipe', { ingredients: ingredientNames });
+        
+        console.log(ingredientNames);
+    }
+
     return(
         <View style={styles.container}>
             <TextInput
@@ -97,6 +106,11 @@ import { View, Text, TextInput, FlatList, StyleSheet, TouchableOpacity } from "r
                 ))}
             </View>
 
+            <TouchableOpacity 
+                style={styles.button}
+                onPress={generate}>
+                <Text>Generar Receta</Text>
+            </TouchableOpacity>
             <TouchableOpacity 
                 style={styles.button}
                 onPress={addRecipe}>

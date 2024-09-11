@@ -1,36 +1,30 @@
 import { useNavigation } from '@react-navigation/native'
 import { useState } from 'react'
-import { Text, View, TouchableOpacity, TextInput, StyleSheet, Alert } from "react-native"
+import { Text, View, TouchableOpacity, TextInput, StyleSheet } from "react-native"
 import axios from 'axios'
 
 export default function Login (){
 
     const [username, setUsername ] = useState('')
     const [password, setPassword] = useState('')
+    const [error, setError] = useState('')
     const navigation = useNavigation()
 
-    const handleLogin = () => {
+    function handleLogin () {
         if (!username || !password) {
-            Alert.alert('Error', 'Por favor, completa todos los campos');
-            return;
+            setError('Por favor, completa todos los campos')
+            return
         }
     
-        axios.post('https://9329-83-53-149-113.ngrok-free.app/api/login/', { username, password })
+        axios.post('http://127.0.0.1:8000/api/login/', { username, password }, { headers: { 'Content-Type': 'application/json' } })
             .then(response => {
-                if (response.data.success) {
-                    Alert.alert('Éxito', 'Inicio de sesión exitoso')
-                    const token = response.data.token
-                    navigation.navigate('Inicio'); 
-                } else {
-                    Alert.alert('Error', response.data.message)
-                    console.log(response.data.message)
-
-                }
+                const token = response.data.token
+                navigation.navigate('Inicio')    
             })
             .catch(error => {
-                console.log('Error en la solicitud', error)
-                Alert.alert('Error', 'No se pudo conectar con el servidor')
-            });
+                setError(error.response.data.message) // usamos el mensaje de error del servidor para ver el error del login
+                console.log('Error en la solicitud', error.message)
+            })
     }
 
     return(
@@ -39,7 +33,7 @@ export default function Login (){
                 <TextInput
                     style={styles.input}
                     value={username}
-                    placeholder='Nombre de usuario o correo electrónico'
+                    placeholder='Nombre de usuario'
                     onChangeText={(value) => setUsername(value)}
                 />
                 <TextInput
@@ -49,6 +43,8 @@ export default function Login (){
                     secureTextEntry={true}
                     onChangeText={(value) => setPassword(value)}
                 />
+
+                {error && <Text style={styles.error}>{error}</Text>}
 
                 <TouchableOpacity 
                     style={styles.button}
@@ -79,6 +75,10 @@ const styles = StyleSheet.create({
     inputsContainer: {
         paddingTop: '40%',
         paddingHorizontal: 20
+    },
+    error: {
+        color: 'red',
+        marginTop: 8,
     },
     button: {
         backgroundColor: '#6CB089',

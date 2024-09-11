@@ -4,8 +4,17 @@ from .models import *
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = '__all__'
+        fields = ['username', 'password', 'email']
 
+    def create(self, validated_data):
+        user = User(
+            username=validated_data['username'],
+            email=validated_data['email']
+        )
+        user.set_password(validated_data['password'])  # Ciframos la contraseña
+        user.save()
+        return user
+    
 class IngredientsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Ingredients
@@ -42,3 +51,9 @@ class QueryHistorySerializer(serializers.ModelSerializer):
     class Meta:
         model = QueryHistory
         fields = '__all__'
+
+class RecipeSerializer(serializers.Serializer):
+    ingredients = serializers.ListField(
+        child=serializers.CharField(max_length=100)  # Ajusta el tamaño según sea necesario
+    )
+    preferences = serializers.CharField(max_length=500)

@@ -5,6 +5,8 @@ from .serializers import *
 from rest_framework.authtoken.models import Token
 from django.contrib.auth import authenticate
 from rest_framework.response import Response
+from .gpt_integration import generate_recipe
+
 
 
 # --------- Recipes -------------
@@ -47,7 +49,7 @@ class LoginView(APIView):
         else:
             return Response({
                 'success':False,
-                'message': 'Correo o contraseña incorrectos'
+                'message': ' Usuario o contraseña incorrectos'
             }, status=status.HTTP_400_BAD_REQUEST)
         
 
@@ -61,3 +63,24 @@ class IngredientsListCreate(generics.ListCreateAPIView):
 class IngredientsRetriveUpdate(generics.RetrieveUpdateDestroyAPIView):
     queryset = Ingredients.objects.all()
     serializer_class = IngredientsSerializer
+
+# ------------ AI --------------------------
+
+
+class GenerateRecipe(APIView):
+   
+
+    def post(self, request):
+
+        serializer = RecipeSerializer(data=request.data)
+
+        if serializer.is_valid():
+            ingredients = serializer.validated_data['ingredients']
+            preferences = serializer.validated_data['preferences']
+
+            # Llamada a la función que genera la receta
+            recipe = generate_recipe(ingredients, preferences)
+
+            return Response({'recipe': recipe}, status=status.HTTP_200_OK)
+        
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

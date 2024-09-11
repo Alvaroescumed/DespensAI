@@ -92,7 +92,7 @@ export default function Register (){
 
         const dataToSubmit = { ...data, pfp }
 
-        axios.post('https://9329-83-53-149-113.ngrok-free.app/api/user/', dataToSubmit)
+        axios.post('http://127.0.0.1:8000/api/user/', dataToSubmit)
             .then((res) => {
             if (res.data.success) {
                 Alert.alert('Usuario registrado con éxito');
