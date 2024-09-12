@@ -65,7 +65,6 @@ import { View, Text, TextInput, FlatList, StyleSheet, TouchableOpacity } from "r
 
         navigation.navigate('AIRecipe', { ingredients: ingredientNames });
         
-        console.log(ingredientNames);
     }
 
     return(

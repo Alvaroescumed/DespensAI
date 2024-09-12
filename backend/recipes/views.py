@@ -83,4 +83,6 @@ class GenerateRecipe(APIView):
 
             return Response({'recipe': recipe}, status=status.HTTP_200_OK)
         
+        print(serializer.errors)
+        
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

@@ -54,6 +54,6 @@ class QueryHistorySerializer(serializers.ModelSerializer):
 
 class RecipeSerializer(serializers.Serializer):
     ingredients = serializers.ListField(
-        child=serializers.CharField(max_length=100)  # Ajusta el tamaño según sea necesario
+        child=serializers.CharField(max_length=100)
     )
     preferences = serializers.CharField(max_length=500)

@@ -1,47 +1,56 @@
-import { useNavigation } from '@react-navigation/native'
+import { useRoute } from '@react-navigation/native'
 import { useState, useEffect } from 'react'
-import { Text, View, TouchableOpacity, TextInput, StyleSheet, Alert } from "react-native"
+import { Text, ScrollView, StyleSheet, TouchableOpacity } from "react-native"
 import axios from 'axios'
 
-export default function AIRecipe ({ingredients}){
-
+export default function AIRecipe(){
+    // Usamos useRoute para obtener los datos pasados por navegación
+    const route = useRoute() 
+    const { ingredients } = route.params
     const [receta, setReceta] = useState(null)
-    const [preferences, setPreferences] = useState(null)
+    const [preferences, setPreferences] = useState('sin gluten')
 
-        async function generarReceta(){
+    async function generarReceta(){
 
         try{
             const res = await axios.post('http://localhost:8000/api/generaterecipe/', {
                 ingredients,
-                preferences
+                preferences,
+            },
+            {
+            headers: {
+                'Content-Type' : 'application/json'
+            },
             })
 
-            console.log(ingredients)
+            console.log('Ingredients:', ingredients, 'Preferences:', preferences);
 
             
             setReceta(res.data.recipe)
 
-        }catch(err){
-            console.error(err.message)
+        }catch(error){
+            console.error(error.response.data)
         }
     }
 
     useEffect(() => {
-        setPreferences('baja en sal')
         generarReceta()
     }, [])
 
     return(
-        <View style={styles.container}>
+        <ScrollView style={styles.container}>
             <Text style={styles.title}>Receta Generada</Text>
 
             {/* Mostrar la receta generada */}
             {receta ? (
+                <>
                 <Text style={styles.receta}>{receta}</Text>
+                <TouchableOpacity><Text>Guardar</Text></TouchableOpacity>
+                </>
             ) : (
                 <Text>Cargando receta...</Text>
             )}
-        </View> 
+        </ScrollView> 
     )
 }
 const styles = StyleSheet.create({
