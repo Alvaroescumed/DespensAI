@@ -35,7 +35,7 @@ ALLOWED_HOSTS = [
     '127.0.0.1',
     'localhost',
     '9329-83-53-149-113.ngrok-free.app',  
-    '192.168.1.43'
+    os.getenv('IP')
 ]
 
 # Application definition
@@ -51,7 +51,7 @@ INSTALLED_APPS = [
     "recipes",
     "openai",
     "corsheaders", 
-    'rest_framework.authtoken',
+    'rest_framework.authtoken', # Autnticacion de tokens para sesiones 
 ]
 
 MIDDLEWARE = [
@@ -65,6 +65,7 @@ MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
 ]
+
 
 # Permitimos el origen de nuestro front
 CORS_ALLOW_ALL_ORIGINS = True
@@ -151,3 +152,9 @@ STATIC_URL = "static/"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 AUTH_USER_MODEL = 'recipes.User'
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.TokenAuthentication',
+    ),
+}

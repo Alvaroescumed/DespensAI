@@ -6,7 +6,8 @@ from rest_framework.authtoken.models import Token
 from django.contrib.auth import authenticate
 from rest_framework.response import Response
 from .gpt_integration import generate_recipe
-
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.authentication import TokenAuthentication
 
 
 # --------- Recipes -------------
@@ -26,8 +27,14 @@ class UserListCreate(generics.ListCreateAPIView):
     serializer_class = UserSerializer
 
 class UserRetriveUpdate(generics.RetrieveUpdateDestroyAPIView):
-    queryset = User.objects.all()
+
     serializer_class = UserSerializer
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [TokenAuthentication]
+
+    # devolvemos solo el user autenticado
+    def get_object(self):
+        return self.request.user
 
 class LoginView(APIView):
 

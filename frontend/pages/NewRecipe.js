@@ -6,23 +6,26 @@ import { useForm, Controller } from 'react-hook-form'
 import {Picker} from '@react-native-picker/picker'
 
 
-export default function NewRecipe(){
 
+export default function NewRecipe() {
+  const [searchQuery, setSearchQuery] = useState('')
+  const [selectedIngredients, setSelectedIngredients] = useState([])
+  const [filteredIngredients, setFilteredIngredients] = useState([])
   const [ingredients, setIngredients] = useState([])
   const { control, handleSubmit, setValue, formState: { errors } } = useForm({
-      defaultValues: {
-        name: '',
-        instructions: '',
-        cook_time: '',
-        portions: 1,
-        ingredients: [],
-      }
-    })
+    defaultValues: {
+      name: '',
+      instructions: '',
+      cook_time: '',
+      portions: 1,
+      ingredients: [],
+    }
+  })
 
   useEffect(() => {
     async function fetchIngredients() {
       try {
-        const response = await axios.get('https://www.themealdb.com/api/json/v1/1/list.php?i=list');
+        const response = await axios.get('https://www.themealdb.com/api/json/v1/1/list.php?i=list')
         const ingredientList = response.data.meals.map((meal) => ({
           id: meal.idIngredient,
           name: meal.strIngredient,
@@ -33,24 +36,52 @@ export default function NewRecipe(){
       }
     }
 
-    fetchIngredients() 
+    fetchIngredients()
   }, [])
+
+  useEffect(() => {
+    // Filtrar ingredientes según el texto de búsqueda
+    if (searchQuery.length > 0) {
+      const filtered = ingredients.filter((meal) =>
+        meal.name.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+      setFilteredIngredients(filtered)
+    } else {
+      setFilteredIngredients([])
+    }
+  }, [searchQuery, ingredients])
+
+  function addIngredient(meal) {
+    setSelectedIngredients((prev) => {
+      const updated = [...prev, meal];
+      setValue('ingredients', updated); // Actualiza el valor del campo en react-hook-form
+      return updated})
+    setSearchQuery('') 
+  }
+
+  function deleteIngredient(ingredientToRemove) {
+    setSelectedIngredients((prev) => {
+      const updated = prev.filter((ingredient) => ingredient.id !== ingredientToRemove.id)
+      setValue('ingredients', updated) // Actualiza el valor del campo en react-hook-form
+      return updated
+    })
+  }
 
   async function onSubmit(data) {
     try {
-        const response = await axios.post('https://localhost:8000/api/recipes', data)
-        if (response.status === 201) {
-          alert('Receta creada con éxito')
-        } else {
-          alert('Error al crear la receta')
-        }
-      } catch (error) {
-        console.error('Error al enviar los datos de la receta:', error)
-        alert('Error al conectar con el servidor')
+      const response = await axios.post('http://localhost:8000/api/recipes/', data)
+      if (response.status === 201) {
+        console.log('Receta creada con éxito')
+      } else {
+        console.error('Error al crear la receta')
+      }
+    } catch (error) {
+      console.error('Error al enviar los datos de la receta:', error.message)
+      alert('Error al conectar con el servidor')
     }
   }
 
-  return(   
+  return (
     <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.label}>Nombre de la receta</Text>
       <Controller
@@ -75,14 +106,43 @@ export default function NewRecipe(){
         rules={{ required: 'Selecciona al menos un ingrediente' }}
         render={({ field: { onChange, value } }) => (
           <View style={styles.pickerContainer}>
-            <Picker
-              selectedValue={value}
-              onValueChange={(itemValue) => onChange(itemValue)}
-            >
-              {ingredients.map((ingredient) => (
-                <Picker.Item key={ingredient.id} label={ingredient.name} value={ingredient.id} />
+            <TextInput
+              style={styles.input}
+              placeholder="Buscar ingredientes..."
+              value={searchQuery}
+              onChangeText={setSearchQuery}
+            />
+
+            {/* Mostrar lista filtrada si hay una búsqueda */}
+            {searchQuery.length > 0 && (
+              <FlatList
+                style={styles.dropdown}
+                data={filteredIngredients}
+                keyExtractor={(item) => item.id.toString()}
+                renderItem={({ item }) => (
+                  <TouchableOpacity 
+                    style={styles.dropdownItem}
+                    onPress={() => addIngredient(item)}
+                  >
+                    <Text>{item.name}</Text>
+                  </TouchableOpacity>
+                )}
+              />
+            )}
+
+            <View style={styles.selectedContainer}>
+              {selectedIngredients.map((meal) => (
+                <TouchableOpacity
+                  key={meal.id}
+                  onPress={() => deleteIngredient(meal)}
+                  style={styles.dropdownItem}
+                >
+                  <Text style={styles.selectedItem}>
+                    {meal.name}
+                  </Text>
+                </TouchableOpacity>
               ))}
-            </Picker>
+            </View>
           </View>
         )}
       />
@@ -146,14 +206,16 @@ export default function NewRecipe(){
   )
 }
 
-
 const styles = StyleSheet.create({
   container: {
-    padding: 20,
+    paddingVertical: 50,
+    paddingHorizontal: 20,
+    backgroundColor: 'white'
   },
   label: {
     fontSize: 16,
     marginBottom: 10,
+    color: 'green'
   },
   input: {
     height: 40,
@@ -172,10 +234,34 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   pickerContainer: {
+    marginBottom: 20,
+  },
+  dropdown: {
+    maxHeight: 150,
     borderWidth: 1,
     borderColor: '#ccc',
     borderRadius: 8,
-    marginBottom: 20,
+    marginBottom: 10,
+    backgroundColor: '#fff',
+    position: 'absolute',
+    width: '100%',
+    zIndex: 1,
+  },
+  dropdownItem: {
+    padding: 10,
+  },
+  selectedContainer: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 8,
+    padding: 10,
+    marginTop: 10,
+  },
+  selectedItem: {
+    fontSize: 16,
+    marginVertical: 5,
+    textAlign: 'center',
+    borderBottomColor: '#eee',
   },
   button: {
     backgroundColor: '#6CB089',

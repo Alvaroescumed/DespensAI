@@ -1,9 +1,10 @@
+import React from 'react'
 import { useRoute } from '@react-navigation/native'
 import { useState, useEffect } from 'react'
 import { Text, ScrollView, StyleSheet, TouchableOpacity } from "react-native"
 import axios from 'axios'
 
-export default function AIRecipe(){
+export default function AIChat(){
     // Usamos useRoute para obtener los datos pasados por navegación
     const route = useRoute() 
     const { ingredients } = route.params
@@ -13,7 +14,7 @@ export default function AIRecipe(){
     async function generarReceta(){
 
         try{
-            const res = await axios.post('http://localhost:8000/api/generaterecipe/', {
+            const res = await axios.post('http://127.0.0.1:8000/api/generaterecipe/', {
                 ingredients,
                 preferences,
             },

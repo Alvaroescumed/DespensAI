@@ -28,11 +28,19 @@ class RecipeIngridientSerializer(serializers.ModelSerializer):
 
 class RecipeSerializer(serializers.ModelSerializer):
 
-    ingredients = RecipeIngridientSerializer(many=True, read_only=True)
+    ingredients = IngredientsSerializer(many=True)  # Usa el serializador para Ingredients
 
     class Meta:
         model = Recipe
-        fields = '__all__'
+        fields = ['id', 'name', 'ingredients', 'instructions', 'cook_time', 'portions']
+    
+    def create(self, validated_data):
+        ingredients_data = validated_data.pop('ingredients', [])
+        recipe = Recipe.objects.create(**validated_data)
+        for ingredient_data in ingredients_data:
+            ingredient, created = Ingredients.objects.get_or_create(**ingredient_data)
+            recipe.ingredients.add(ingredient)
+        return recipe
 
 class PreferencesSerializer(serializers.ModelSerializer):
     class Meta:
@@ -52,8 +60,3 @@ class QueryHistorySerializer(serializers.ModelSerializer):
         model = QueryHistory
         fields = '__all__'
 
-class RecipeSerializer(serializers.Serializer):
-    ingredients = serializers.ListField(
-        child=serializers.CharField(max_length=100)
-    )
-    preferences = serializers.CharField(max_length=500)

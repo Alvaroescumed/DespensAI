@@ -3,7 +3,7 @@ import axios from 'axios'
 import { useEffect, useState } from 'react'
 import { View, Text, TextInput, FlatList, StyleSheet, TouchableOpacity } from "react-native"
 
- export default function Inicio(){
+ export default function AIRecipe(){
 
     const [ingredients, setIngredients] = useState([])
     const [filteredIngredients, setFilteredIngredients] = useState([])
@@ -55,15 +55,12 @@ import { View, Text, TextInput, FlatList, StyleSheet, TouchableOpacity } from "r
         setSelectedIngredients(updatedIngredients)
     }
 
-    function addRecipe(){
-        navigation.navigate('NewRecipe')
-    }
 
     function generate() {
 
         const ingredientNames = selectedIngredients.map((ingredient) => ingredient.name);
 
-        navigation.navigate('AIRecipe', { ingredients: ingredientNames });
+        navigation.navigate('AIChat', { ingredients: ingredientNames });
         
     }
 
@@ -97,6 +94,7 @@ import { View, Text, TextInput, FlatList, StyleSheet, TouchableOpacity } from "r
                     <TouchableOpacity
                         key={ingredient.id} 
                         onPress={() => deleteIngredient(ingredient)}
+                        style={styles.dropdownItem}
                     >
                         <Text style={styles.selectedItem}>
                             {ingredient.name}
@@ -109,11 +107,6 @@ import { View, Text, TextInput, FlatList, StyleSheet, TouchableOpacity } from "r
                 style={styles.button}
                 onPress={generate}>
                 <Text>Generar Receta</Text>
-            </TouchableOpacity>
-            <TouchableOpacity 
-                style={styles.button}
-                onPress={addRecipe}>
-                <Text>Nueva Receta</Text>
             </TouchableOpacity>
         </View>
     )
@@ -146,6 +139,7 @@ const styles = StyleSheet.create({
     dropdownItem: {
         padding: 10,
         borderBottomWidth: 1,
+        textAlign: 'center',
         borderBottomColor: '#eee',
     },
     inputsContainer: {
@@ -158,6 +152,10 @@ const styles = StyleSheet.create({
     selectedItem: {
         fontSize: 16,
         color: '#333',
+        fontSize: 16,
+        marginVertical: 5,
+        textAlign: 'center',
+        borderBottomColor: '#eee',
     },
     button: {
         backgroundColor: '#6CB089',

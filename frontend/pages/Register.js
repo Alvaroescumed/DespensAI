@@ -92,7 +92,7 @@ export default function Register (){
 
         const dataToSubmit = { ...data, pfp }
 
-        axios.post('http://127.0.0.1:8000/api/user/', dataToSubmit)
+        axios.post('http://192.168.1.43:8000/api/user/', dataToSubmit)
             .then((res) => {
             if (res.data.success) {
                 Alert.alert('Usuario registrado con éxito');

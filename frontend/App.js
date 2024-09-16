@@ -1,85 +1,35 @@
+import React, { useEffect } from 'react'
 import {NavigationContainer} from '@react-navigation/native'
-import { createNativeStackNavigator } from '@react-navigation/native-stack'
-import WelcomePage from './pages/WelcomePage'
-import Login from './pages/Login'
-import Register from './pages/Register'
-import Inicio from './pages/Inicio'
-import NewRecipe from './pages/NewRecipe'
-import AIRecipe from './pages/AIRecipe'
-
-const Stack = createNativeStackNavigator()
-
+import AuthStack from './navigation/AuthStack'
+import { useState } from 'react'
+import Tabs from './navigation/tabs'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 export default function App(){
+  const [isAuthenticated, setIsAuthenticated] = useState(false)
+
+  // comprobamos que se haya iniciado sesion
+  
+  useEffect(() => {
+    async function checkToken() {
+      const token = await AsyncStorage.getItem('userToken')
+
+      if(token){
+        setIsAuthenticated(true)
+      }
+    }
+
+    checkToken
+  }, [])
 
   return(
     <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen 
-          name="WelcomePage" 
-          component={WelcomePage} 
-          options={{
-            title: '', 
-            headerShown:true
-          }} 
-        />
-        <Stack.Screen 
-          name="NewRecipe" 
-          component={NewRecipe} 
-          options={{
-            title: '', 
-            headerShown:true
-          }} 
-        />
-        
-        <Stack.Screen 
-          name="Login" 
-          component={Login} 
-          options={{
-            title: '',
-            headerTransparent: true,
-            headerTintColor: '#6CB089',
-            headerStyle: {
-              backgroundColor: '#fff'
-            }
-            }} 
-        />
-        <Stack.Screen 
-          name="Register" 
-          component={Register} 
-          options={{
-            title: '',
-            headerTransparent: true,
-            headerTintColor: '#6CB089',
-            headerStyle: {
-              backgroundColor: '#fff'
-            }
-            }} 
-          />
-          <Stack.Screen 
-          name="Inicio" 
-          component={Inicio} 
-          options={{
-            title: '',
-            headerTransparent: true,
-            headerTintColor: '#6CB089',
-            headerStyle: {
-              backgroundColor: '#fff'
-            }
-            }} 
-          />
-          <Stack.Screen 
-          name="AIRecipe" 
-          component={AIRecipe} 
-          options={{
-            title: '',
-            headerTransparent: true,
-            headerTintColor: '#6CB089',
-            headerStyle: {
-              backgroundColor: '#fff'
-            }
-            }} 
-          />
-      </Stack.Navigator>
+
+      {isAuthenticated ? (
+        <Tabs />  // Si el usuario está autenticado, mostramos las pestañas
+      ) : (
+        <AuthStack />  // Si no, mostramos el stack de autenticación
+      )}
+    
     </NavigationContainer>
   )
 }

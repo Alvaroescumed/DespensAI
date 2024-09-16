@@ -2,7 +2,7 @@ import { useNavigation } from '@react-navigation/native'
 import { useState } from 'react'
 import { Text, View, TouchableOpacity, TextInput, StyleSheet } from "react-native"
 import axios from 'axios'
-
+import AsyncStorage from '@react-native-async-storage/async-storage'
 export default function Login (){
 
     const [username, setUsername ] = useState('')
@@ -10,16 +10,27 @@ export default function Login (){
     const [error, setError] = useState('')
     const navigation = useNavigation()
 
-    function handleLogin () {
+    async function handleLogin () {
         if (!username || !password) {
             setError('Por favor, completa todos los campos')
             return
         }
     
-        axios.post('http://127.0.0.1:8000/api/login/', { username, password }, { headers: { 'Content-Type': 'application/json' } })
-            .then(response => {
+        axios.post('http://127.0.0.1:8000/api/login/', 
+            { username, password }, 
+            { headers: { 'Content-Type': 'application/json' } 
+            })
+            .then(async response => {
+
                 const token = response.data.token
-                navigation.navigate('Inicio')    
+                try{
+                    await AsyncStorage.setItem('userToken', token)
+                    navigation.navigate('TabNav')    
+                    console.log('Inicio de sesion correcto', token)
+                } catch (error){
+                    console.log('Error al guardar el token', error)
+                }
+
             })
             .catch(error => {
                 setError(error.response.data.message) // usamos el mensaje de error del servidor para ver el error del login
