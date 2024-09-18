@@ -11,32 +11,17 @@ class User(AbstractUser):
     def __str__(self):
         return self.username
 
-class Ingredients(models.Model): 
-    name = models.CharField(max_length=255, unique=True)
-    type = models.CharField(max_length=255)
-
-    def __str__(self):
-        return self.name
 
 class Recipe(models.Model):
     name = models.CharField(max_length=255)
-    ingridients = models.ManyToManyField(Ingredients, through='RecipeIngredients', related_name='recipes')
+    ingredients = models.TextField(default='')
     instructions = models.TextField()
     creation_date = models.DateTimeField(auto_now_add=True)
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='recipes')
-    cook_time = models.PositiveBigIntegerField()
-    portions = models.PositiveBigIntegerField(default=1)             
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='recipes')      
 
     def __str__(self):
         return self.name
 
-class RecipeIngredients(models.Model):
-    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
-    ingredients = models.ForeignKey(Ingredients, on_delete=models.CASCADE)
-    quantity = models.CharField(max_length=100)
-
-    def __str__(self):
-        return f"{self.quantity} {self.ingredients}"
     
 class Preferences(models.Model):
     user =  models.ForeignKey(User, on_delete=models.CASCADE, related_name='preferences')
@@ -56,10 +41,3 @@ class List(models.Model):
     def __str__(self):
         return f"{self.name} - {self.user.username}"
     
-class QueryHistory(models.Model):
-
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="query")
-    ingredients = models.TextField()
-    preferences = models.TextField()
-    query_result = models.TextField()
-    date = models.DateTimeField(auto_now_add=True)

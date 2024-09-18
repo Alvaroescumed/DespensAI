@@ -83,27 +83,43 @@ export default function Register (){
     }
 
 
-    function onSubmit(data){
-        
-        if (data.password !== data.rpassword) {
-            Alert.alert('Error', 'Las contraseñas no coinciden')
-            return
-        }
-
-        const dataToSubmit = { ...data, pfp }
-
-        axios.post('http://192.168.1.43:8000/api/user/', dataToSubmit)
-            .then((res) => {
-            if (res.data.success) {
-                Alert.alert('Usuario registrado con éxito');
-            } else {
-                Alert.alert('Error', res.data.message || 'Solicitud incorrecta');
-            }
-            })
-            .catch((err) => {
-            console.error('Error en la solicitud', err);
-            Alert.alert('Error', 'No se puede conectar con el servidor');
-            })
+    async function onSubmit(data) {
+      if (data.password !== data.rpassword) {
+          console.log('Error', 'Las contraseñas no coinciden');
+          return;
+      }
+  
+      const formData = new FormData()
+      formData.append('first_name', data.first_name)
+      formData.append('last_name', data.last_name)
+      formData.append('username', data.username)
+      formData.append('email', data.email)
+      formData.append('password', data.password)
+      formData.append('bio', data.bio || '')
+      formData.append('birth_date', data.birth_date || '')
+      formData.append('location', data.location || '')
+      
+      if (pfp) {
+          formData.append('pfp', {
+              uri: pfp,
+              type: 'image/jpeg', // Ajusta el tipo de archivo según el archivo
+              name: 'profile.jpg' // Nombre del archivo
+          });
+      }
+  
+      axios.post('http://10.0.2.2:8000/api/user/', formData, {
+          headers: { 'Content-Type': 'multipart/form-data' }
+      })
+      .then((res) => {
+          if (res.data.success) {
+              console.log('Usuario registrado con éxito')
+          } else {
+              console.error('Error', res.data.message)
+          }
+      })
+      .catch((error) => {
+          console.error('Error en la solicitud', error);
+      })
     }
 
 

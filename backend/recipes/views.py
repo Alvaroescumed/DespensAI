@@ -16,6 +16,10 @@ class RecipeListCreate(generics.ListCreateAPIView):
     queryset = Recipe.objects.all()
     serializer_class = RecipeSerializer
 
+    #asignamos que el usuario que realice la peticion es el que se registra en la receta
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user) 
+
 class RecipeRetriveUpdate(generics.RetrieveUpdateDestroyAPIView):
     queryset = Recipe.objects.all()
     serializer_class = RecipeSerializer
@@ -61,16 +65,6 @@ class LoginView(APIView):
         
 
 
-# --------  INGREDIENTS ----------------
-
-class IngredientsListCreate(generics.ListCreateAPIView):
-    queryset = Ingredients.objects.all()
-    serializer_class = IngredientsSerializer
-
-class IngredientsRetriveUpdate(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Ingredients.objects.all()
-    serializer_class = IngredientsSerializer
-
 # ------------ AI --------------------------
 
 
@@ -79,7 +73,7 @@ class GenerateRecipe(APIView):
 
     def post(self, request):
 
-        serializer = RecipeSerializer(data=request.data)
+        serializer = AIRecipeSerializer(data=request.data)
 
         if serializer.is_valid():
             ingredients = serializer.validated_data['ingredients']

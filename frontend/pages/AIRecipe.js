@@ -1,7 +1,7 @@
-import { useNavigation } from '@react-navigation/native'
+import { TabRouter, useNavigation } from '@react-navigation/native'
 import axios from 'axios'
 import { useEffect, useState } from 'react'
-import { View, Text, TextInput, FlatList, StyleSheet, TouchableOpacity } from "react-native"
+import { View, Text, TextInput, FlatList, StyleSheet, TouchableOpacity, Modal } from "react-native"
 
  export default function AIRecipe(){
 
@@ -9,6 +9,7 @@ import { View, Text, TextInput, FlatList, StyleSheet, TouchableOpacity } from "r
     const [filteredIngredients, setFilteredIngredients] = useState([])
     const [searchQuery, setSearchQuery] = useState('')
     const [selectedIngredients, setSelectedIngredients] = useState([])
+ 
 
     const navigation = useNavigation()
 
@@ -64,6 +65,7 @@ import { View, Text, TextInput, FlatList, StyleSheet, TouchableOpacity } from "r
         
     }
 
+
     return(
         <View style={styles.container}>
             <TextInput
@@ -102,7 +104,6 @@ import { View, Text, TextInput, FlatList, StyleSheet, TouchableOpacity } from "r
                     </TouchableOpacity>
                 ))}
             </View>
-
             <TouchableOpacity 
                 style={styles.button}
                 onPress={generate}>
@@ -119,53 +120,68 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
         marginTop: 90
     },
-    input: {
-        height: 40,
-        borderColor: '#ccc',
-        borderWidth: 1,
-        borderRadius: 8,
-        paddingHorizontal: 10,
+    recipeContainer: {
         backgroundColor: '#f9f9f9',
-        marginVertical: 10
-    },
-    dropdown: {
-        maxHeight: 200, 
+        padding: 15,
+        marginBottom: 10,
+        borderRadius: 8,
         borderColor: '#ccc',
         borderWidth: 1,
-        borderRadius: 8,
-        marginTop: 5,
-        backgroundColor: '#fff'
     },
-    dropdownItem: {
-        padding: 10,
-        borderBottomWidth: 1,
-        textAlign: 'center',
-        borderBottomColor: '#eee',
-    },
-    inputsContainer: {
-        paddingTop: '40%',
-        paddingHorizontal: 20
-    },
-    selectedContainer: {
-        marginVertical: 10,
-    },
-    selectedItem: {
+    recipeTitle: {
+        fontWeight: 'bold',
         fontSize: 16,
         color: '#333',
-        fontSize: 16,
-        marginVertical: 5,
-        textAlign: 'center',
-        borderBottomColor: '#eee',
+        marginBottom: 5,
     },
-    button: {
+    recipeInstructions: {
+        fontSize: 14,
+        color: '#555',
+        lineHeight: 20,
+    },
+    modalView: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        padding: 20,
+    },
+    modalContent: {
+        width: '90%',
+        backgroundColor: '#fff',
+        padding: 20,
+        borderRadius: 10,
+        alignItems: 'center',
+    },
+    modalTitle: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        color: '#333',
+        marginBottom: 15,
+        textAlign: 'center',
+    },
+    modalText: {
+        fontSize: 16,
+        color: '#555',
+        textAlign: 'center',
+        lineHeight: 22,
+    },
+    modalButton: {
         backgroundColor: '#6CB089',
         borderRadius: 8,
         paddingVertical: 12,
+        paddingHorizontal: 20,
+        marginTop: 15,
+        width: '100%',
         alignItems: 'center',
-        marginTop: 20,
     },
-    buttonText: {
+    modalButtonText: {
         color: '#fff',
         fontSize: 16,
-    }
+        fontWeight: 'bold',
+    },
+    cancelButton: {
+        backgroundColor: '#ff5c5c',
+        marginTop: 10,
+    },
 })

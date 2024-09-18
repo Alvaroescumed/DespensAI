@@ -1,9 +1,7 @@
-import { useNavigation } from '@react-navigation/native'
 import axios from 'axios'
 import { useEffect, useState } from 'react'
 import { View, Text, TextInput, FlatList, StyleSheet, ScrollView, TouchableOpacity } from "react-native"
 import { useForm, Controller } from 'react-hook-form'
-import {Picker} from '@react-native-picker/picker'
 
 
 
@@ -14,10 +12,8 @@ export default function NewRecipe() {
   const [ingredients, setIngredients] = useState([])
   const { control, handleSubmit, setValue, formState: { errors } } = useForm({
     defaultValues: {
-      name: '',
+      title: '',
       instructions: '',
-      cook_time: '',
-      portions: 1,
       ingredients: [],
     }
   })
@@ -68,17 +64,29 @@ export default function NewRecipe() {
   }
 
   async function onSubmit(data) {
-    try {
-      const response = await axios.post('http://localhost:8000/api/recipes/', data)
-      if (response.status === 201) {
-        console.log('Receta creada con éxito')
-      } else {
-        console.error('Error al crear la receta')
+
+      // formateamos el array de ingredientes a un string separando cada uno por comas
+      const formattedIngredients = selectedIngredients.join(', ')
+      const token = await AsyncStorage.getItem('userToken')
+
+      try {
+          await axios.post('http://127.0.0.1:8000/api/recipe/', {
+              name: recipeTitle,
+              ingredients: formattedIngredients,
+              instructions: recipe,
+          }, {
+              headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': `Token ${token}`
+              }
+          })
+
+          closeModal() // Cerrar modal después de guardar la receta
+          console.log('Receta guardada con éxito')
+      } catch (error) {
+          console.error(error.message)
       }
-    } catch (error) {
-      console.error('Error al enviar los datos de la receta:', error.message)
-      alert('Error al conectar con el servidor')
-    }
+  
   }
 
   return (
@@ -164,40 +172,6 @@ export default function NewRecipe() {
         )}
       />
       {errors.instructions && <Text style={styles.error}>{errors.instructions.message}</Text>}
-
-      <Text style={styles.label}>Tiempo de cocción (minutos)</Text>
-      <Controller
-        control={control}
-        name="cook_time"
-        rules={{ required: 'El tiempo de cocción es obligatorio' }}
-        render={({ field: { onChange, value } }) => (
-          <TextInput
-            style={styles.input}
-            placeholder="Ej. 30"
-            value={value}
-            onChangeText={onChange}
-            keyboardType="numeric"
-          />
-        )}
-      />
-      {errors.cook_time && <Text style={styles.error}>{errors.cook_time.message}</Text>}
-
-      <Text style={styles.label}>Porciones</Text>
-      <Controller
-        control={control}
-        name="portions"
-        rules={{ required: 'Las porciones son obligatorias', min: 1 }}
-        render={({ field: { onChange, value } }) => (
-          <TextInput
-            style={styles.input}
-            placeholder="Ej. 4"
-            value={value.toString()}
-            onChangeText={onChange}
-            keyboardType="numeric"
-          />
-        )}
-      />
-      {errors.portions && <Text style={styles.error}>{errors.portions.message}</Text>}
 
       <TouchableOpacity style={styles.button} onPress={handleSubmit(onSubmit)}>
         <Text style={styles.buttonText}>Crear receta</Text>

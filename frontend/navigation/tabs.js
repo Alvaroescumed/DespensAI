@@ -22,7 +22,7 @@ export default function Tabs (){
               case 'Home':
                 iconName = 'home'
                 break
-              case 'AIRecipe':
+              case 'AINav':
                 iconName = 'restaurant'
                 break
               case 'New':
@@ -52,7 +52,7 @@ export default function Tabs (){
                 }} 
             />
             <Tab.Screen
-                name="AIRecipe" 
+                name="AINav" 
                 component={AIStackNavigation} 
                 options={{
                     headerShown: false
