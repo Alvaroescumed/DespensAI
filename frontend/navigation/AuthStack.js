@@ -9,7 +9,12 @@ const Stack = createNativeStackNavigator()
 export default function AuthStack(){
 
   return(
-    <Stack.Navigator initialRouteName="WelcomePage">
+    <Stack.Navigator
+     initialRouteName="WelcomePage"
+     screenOptions={{
+      cardStyle: { backgroundColor: '#fff' }, 
+        }}
+      >
         <Stack.Screen 
           name="WelcomePage" 
           component={WelcomePage} 

@@ -6,7 +6,11 @@ const Stack = createNativeStackNavigator()
 
 export default function AIStackNavigation(){
     return (
-        <Stack.Navigator>
+        <Stack.Navigator
+            screenOptions={{
+                cardStyle: { backgroundColor: '#fff' }
+            }}
+>
             <Stack.Screen 
                 name="AIRecipe" 
                 component={AIRecipe} 

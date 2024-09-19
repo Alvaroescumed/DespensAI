@@ -14,6 +14,7 @@ export default function Tabs (){
     return(
         <Tab.Navigator
         screenOptions={({ route }) => ({
+          cardStyle: { backgroundColor: '#fff' }, 
           tabBarIcon: ({ color, size }) => {
             let iconName;
             

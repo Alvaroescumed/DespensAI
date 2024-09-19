@@ -1,7 +1,6 @@
-import React, { useEffect } from 'react'
+import React, { useState, useEffect, StyleSheet } from 'react'
 import {NavigationContainer} from '@react-navigation/native'
 import AuthStack from './navigation/AuthStack'
-import { useState } from 'react'
 import Tabs from './navigation/tabs'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 export default function App(){
@@ -22,7 +21,11 @@ export default function App(){
   }, [])
 
   return(
-    <NavigationContainer>
+    <NavigationContainer
+        screenOptions={{
+          cardStyle: { backgroundColor: '#fff' },
+      }}
+    >
 
       {isAuthenticated ? (
         <Tabs />  // Si el usuario está autenticado, mostramos las pestañas

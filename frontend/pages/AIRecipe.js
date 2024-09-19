@@ -1,7 +1,7 @@
 import { TabRouter, useNavigation } from '@react-navigation/native'
 import axios from 'axios'
 import { useEffect, useState } from 'react'
-import { View, Text, TextInput, FlatList, StyleSheet, TouchableOpacity, Modal } from "react-native"
+import { View, Text, TextInput, FlatList, StyleSheet, TouchableOpacity } from "react-native"
 
  export default function AIRecipe(){
 
@@ -120,68 +120,53 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
         marginTop: 90
     },
-    recipeContainer: {
-        backgroundColor: '#f9f9f9',
-        padding: 15,
-        marginBottom: 10,
-        borderRadius: 8,
+    input: {
+        height: 40,
         borderColor: '#ccc',
         borderWidth: 1,
+        borderRadius: 8,
+        paddingHorizontal: 10,
+        backgroundColor: '#f9f9f9',
+        marginVertical: 10
     },
-    recipeTitle: {
-        fontWeight: 'bold',
+    dropdown: {
+        maxHeight: 200, 
+        borderColor: '#ccc',
+        borderWidth: 1,
+        borderRadius: 8,
+        marginTop: 5,
+        backgroundColor: '#fff'
+    },
+    dropdownItem: {
+        padding: 10,
+        borderBottomWidth: 1,
+        textAlign: 'center',
+        borderBottomColor: '#eee',
+    },
+    inputsContainer: {
+        paddingTop: '40%',
+        paddingHorizontal: 20
+    },
+    selectedContainer: {
+        marginVertical: 10,
+    },
+    selectedItem: {
         fontSize: 16,
         color: '#333',
-        marginBottom: 5,
-    },
-    recipeInstructions: {
-        fontSize: 14,
-        color: '#555',
-        lineHeight: 20,
-    },
-    modalView: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: 'rgba(0, 0, 0, 0.5)',
-        padding: 20,
-    },
-    modalContent: {
-        width: '90%',
-        backgroundColor: '#fff',
-        padding: 20,
-        borderRadius: 10,
-        alignItems: 'center',
-    },
-    modalTitle: {
-        fontSize: 18,
-        fontWeight: 'bold',
-        color: '#333',
-        marginBottom: 15,
-        textAlign: 'center',
-    },
-    modalText: {
         fontSize: 16,
-        color: '#555',
+        marginVertical: 5,
         textAlign: 'center',
-        lineHeight: 22,
+        borderBottomColor: '#eee',
     },
-    modalButton: {
+    button: {
         backgroundColor: '#6CB089',
         borderRadius: 8,
         paddingVertical: 12,
-        paddingHorizontal: 20,
-        marginTop: 15,
-        width: '100%',
         alignItems: 'center',
+        marginTop: 20,
     },
-    modalButtonText: {
+    buttonText: {
         color: '#fff',
         fontSize: 16,
-        fontWeight: 'bold',
-    },
-    cancelButton: {
-        backgroundColor: '#ff5c5c',
-        marginTop: 10,
-    },
+    }
 })
