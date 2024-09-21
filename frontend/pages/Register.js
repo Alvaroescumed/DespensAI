@@ -1,38 +1,20 @@
 import { useNavigation } from '@react-navigation/native'
 import { useEffect, useState } from 'react'
-import { Text, View, Button, TextInput, Alert, StyleSheet, TouchableOpacity, Modal } from "react-native"
+import { Text, View, Button, TextInput, ScrollView, StyleSheet, TouchableOpacity, Modal } from "react-native"
 import {Picker} from '@react-native-picker/picker'
 import DateTimePicker from '@react-native-community/datetimepicker'
 import * as ImagePicker from 'expo-image-picker'
 import axios from 'axios'
-import { useForm, Controller } from 'react-hook-form'
+import { useForm } from 'react-hook-form'
+import MyButton from '../components/MyButton'
+import CustomForm from '../components/CustomForm'
+import getCountries from '../hooks/getCountries'
 
-function FormField({ control, name, label, rules, placeholder, secureTextEntry }) {
-    return (
-      <View style={styles.inputContainer}>
-        <Text style={styles.label}>{label}</Text>
-        <Controller
-          control={control}
-          name={name}
-          rules={rules}
-          render={({ field: { onChange, value } }) => (
-            <TextInput
-              style={styles.input}
-              placeholder={placeholder}
-              secureTextEntry={secureTextEntry}
-              value={value}
-              onChangeText={onChange}
-            />
-          )}
-        />
-      </View>
-    )
-  }
 export default function Register (){
 
     const [showDatePicker, setShowDatePicker] = useState(false)
     const [showCountryPicker, setShowCountryPicker] = useState(false)
-    const [countries, setCountries] = useState([])
+    const countries = getCountries()
     const [pfp, setPfp] = useState(null)
     
     const { control, handleSubmit, setValue, watch, formState: { errors } } = useForm({
@@ -51,22 +33,7 @@ export default function Register (){
 
     const navigation = useNavigation()
 
-    useEffect(() => {
-        async function fetchCountries(){
-            try{
-                const res = await axios.get('https://restcountries.com/v3.1/all')
-                const countryList = res.data.map(country => ({
-                    name: country.name.common,
-                    code: country.cca2
-                }))
-                setCountries(countryList.sort((a, b) => a.name.localeCompare(b.name)))
-            } catch(err){
-                console.error("Error fetching countries", err)
-            }
-        }
-
-        fetchCountries()
-    }, [])
+    
 
    
     async function pickImage(){
@@ -111,11 +78,7 @@ export default function Register (){
           headers: { 'Content-Type': 'multipart/form-data' }
       })
       .then((res) => {
-          if (res.data.success) {
-              console.log('Usuario registrado con éxito')
-          } else {
-              console.error('Error', res.data.message)
-          }
+        console.log('Usuario registrado con éxito')
       })
       .catch((error) => {
           console.error('Error en la solicitud', error);
@@ -124,9 +87,9 @@ export default function Register (){
 
 
     return(
-        <View style={styles.container}>
-        {/* Usando el componente FormField para los campos de texto */}
-        <FormField
+        <ScrollView style={styles.container}>
+    
+        <CustomForm
           control={control}
           name="first_name"
           label="Nombre*"
@@ -135,7 +98,7 @@ export default function Register (){
         />
         {errors.first_name && <Text style={styles.error}>{errors.first_name.message}</Text>}
   
-        <FormField
+        <CustomForm
           control={control}
           name="last_name"
           label="Apellido*"
@@ -144,7 +107,7 @@ export default function Register (){
         />
         {errors.last_name && <Text style={styles.error}>{errors.last_name.message}</Text>}
   
-        <FormField
+        <CustomForm
           control={control}
           name="username"
           label="Nombre de Usuario*"
@@ -153,7 +116,7 @@ export default function Register (){
         />
         {errors.username && <Text style={styles.error}>{errors.username.message}</Text>}
   
-        <FormField
+        <CustomForm
           control={control}
           name="email"
           label="Correo*"
@@ -165,7 +128,7 @@ export default function Register (){
         />
         {errors.email && <Text style={styles.error}>{errors.email.message}</Text>}
   
-        <FormField
+        <CustomForm
           control={control}
           name="password"
           label="Contraseña*"
@@ -175,7 +138,7 @@ export default function Register (){
         />
         {errors.password && <Text style={styles.error}>{errors.password.message}</Text>}
   
-        <FormField
+        <CustomForm
           control={control}
           name="rpassword"
           label="Repite la contraseña*"
@@ -203,7 +166,7 @@ export default function Register (){
                 <Picker.Item key={country.code} label={country.name} value={country.name} />
               ))}
             </Picker>
-            <Button title="Cerrar" onPress={() => setShowCountryPicker(false)} />
+            <MyButton text="Cerrar" onPress={() => setShowCountryPicker(false)} />
           </View>
         </Modal>
   
@@ -227,12 +190,9 @@ export default function Register (){
         )}
   
         <Text style={styles.label}>Imagen de perfil</Text>
-        <Button title="Selecciona tu imagen de perfil" onPress={pickImage} />
-  
-        <TouchableOpacity style={styles.button} onPress={handleSubmit(onSubmit)}>
-          <Text style={styles.buttonText}>Registrarse</Text>
-        </TouchableOpacity>
-      </View>
+        <MyButton text="Selecciona tu imagen de perfil" onPress={pickImage} />
+        <MyButton text="Registro" onPress={handleSubmit(onSubmit)}/>
+      </ScrollView>
   
     )
 }

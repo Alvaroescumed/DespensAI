@@ -49,4 +49,6 @@ class AIRecipeSerializer(serializers.Serializer):
     ingredients = serializers.ListField(
         child=serializers.CharField(max_length=100)
     )
-    preferences = serializers.CharField(max_length=500)
+    preferences = serializers.ListField(
+        child = serializers.CharField(max_length=100)
+    )

@@ -1,8 +1,10 @@
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import axios from "axios"
-import {useState, useEffect} from "react"
+import {useState, useEffect, useCallback} from "react"
 import {Text, View, FlatList, TouchableOpacity, StyleSheet, Modal, ScrollView} from "react-native"
-
+import MyButton from "../components/MyButton"
+import { useFocusEffect } from "@react-navigation/native" // Hook para cuando se navega a la pagina
+import RecipeCard from "../components/RecipeCard"
 
 export default function Home(){
 
@@ -36,38 +38,31 @@ export default function Home(){
         fetchUser()
     }, [])
 
-    useEffect(() => {
-        async function bringRecipes(){
-            await axios.get('http://10.0.2.2:8000/api/recipe/')
-                .then ( response => {
-                    const sortedRecipes = response.data.sort((a, b) => new Date(b.creation_date) - new Date(a.creation_date))
-                    setRecipes(sortedRecipes.slice(0, 5))
-                })
-                .catch(error => 
-                    console.error(error)
-                )
-        }
-
-        bringRecipes()
-    }, [])
+    useFocusEffect(
+        useCallback(() => {
+          let isMounted = true // Controla el montaje del componente
     
-    function renderRecipe({item}){
-        return(
-            <TouchableOpacity 
-                style = {styles.recipeContainer}
-                onPress={() => {
-                    setSelectedRecipe(item)
-                    setModalVisible(true)}
-                }>
-                <Text  style={styles.recipeTitle}>{item.name}</Text>
-                <Text
-                    style={styles.recipeInstructions}
-                    numberOfLines={2} //limitamos el numero de lineas
-                    ellipsizeMode="..." //añadimos puntos suspensivos al texto cortado
-                >{item.instructions}</Text>
-            </TouchableOpacity>
-        )
-    }
+          async function bringRecipes() {
+            try {
+              const response = await axios.get('http://10.0.2.2:8000/api/recipe/');
+              const sortedRecipes = response.data.sort((a, b) => new Date(b.creation_date) - new Date(a.creation_date))
+              if (isMounted) {
+                setRecipes(sortedRecipes.slice(0, 5))
+              }
+            } catch (error) {
+              console.error(error)
+            }
+          }
+    
+          bringRecipes()
+    
+          // Cleanup function
+          return () => {
+            isMounted = false // Evita la actualización del estado si el componente se desmonta
+          }
+        }, []) 
+      )
+    
 
     return(
         <View style={styles.container}>
@@ -77,7 +72,13 @@ export default function Home(){
         <FlatList
             data={recipes}
             keyExtractor={(item) => item.id.toString()}
-            renderItem={renderRecipe}
+            renderItem={({ item }) => (
+                <RecipeCard
+                    item={item}
+                    setSelectedRecipe={setSelectedRecipe}
+                    setModalVisible={setModalVisible}
+                />
+            )}
             ListEmptyComponent={<Text>No se encontraron recetas</Text>}
         />
 
@@ -92,9 +93,8 @@ export default function Home(){
                     <ScrollView contentContainerStyle={styles.modalContent}>
                         <Text style={styles.modalTitle}>{selectedRecipe.name}</Text>
                         <Text>{selectedRecipe.instructions}</Text>
-                        <TouchableOpacity style={styles.modalButton} onPress={() => setModalVisible(false)}>
-                            <Text style={styles.modalButtonText}>Cerrar</Text>
-                        </TouchableOpacity>
+                        <MyButton text='cerrrar' onPress={() => setModalVisible(false)}/>
+
                     </ScrollView>
                 </View>
             </Modal>

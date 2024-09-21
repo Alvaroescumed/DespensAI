@@ -3,6 +3,8 @@ import { useState } from 'react'
 import { Text, View, TouchableOpacity, TextInput, StyleSheet } from "react-native"
 import axios from 'axios'
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import MyButton from '../components/MyButton'
+
 export default function Login (){
 
     const [username, setUsername ] = useState('')
@@ -57,11 +59,9 @@ export default function Login (){
 
                 {error && <Text style={styles.error}>{error}</Text>}
 
-                <TouchableOpacity 
-                    style={styles.button}
-                    onPress={handleLogin}>
-                    <Text style={styles.buttonText}>Iniciar sesión</Text>
-                </TouchableOpacity>
+                <MyButton 
+                    text='Iniciar sesión'
+                    onPress={handleLogin}/>
             </View>
         </View> 
     )

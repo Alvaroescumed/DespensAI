@@ -1,7 +1,7 @@
 import React, { useState, useEffect, StyleSheet } from 'react'
 import {NavigationContainer} from '@react-navigation/native'
 import AuthStack from './navigation/AuthStack'
-import Tabs from './navigation/tabs'
+import Tabs from './navigation/Tabs'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 export default function App(){
   const [isAuthenticated, setIsAuthenticated] = useState(false)

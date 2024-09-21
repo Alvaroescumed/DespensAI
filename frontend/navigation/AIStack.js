@@ -8,6 +8,9 @@ export default function AIStackNavigation(){
     return (
         <Stack.Navigator
             screenOptions={{
+                headerStyle: {
+                    backgroundColor: '#fff',  // Fondo blanco para el header
+                },
                 cardStyle: { backgroundColor: '#fff' }
             }}
 >

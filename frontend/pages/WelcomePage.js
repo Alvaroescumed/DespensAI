@@ -1,24 +1,30 @@
 import { useNavigation } from '@react-navigation/native'
-import { Text, View, Button, StyleSheet } from "react-native"
+import { Text, View, Button, StyleSheet, TouchableOpacity } from "react-native"
+import MyButton from '../components/MyButton'
+
 export default function WelcomePage (){
 
     const navigation = useNavigation()
 
     return(
-        <View>
-            <Text>Bienvenido a DespensAI</Text>
-            <Button title="Iniciar Sesión" onPress={() => navigation.navigate('Login')}/>
-            <Button title="Registrarse" onPress={() => navigation.navigate('Register')}/>
+        <View styles={styles.container}>
+          <Text style={styles.title}>Bienvenido a DespensAI</Text>
+           <MyButton 
+            text={'Login'}
+            onPress={() => navigation.navigate('Login')}/>
+            <MyButton 
+            text={'Register'}
+            onPress={() => navigation.navigate('Register')}/>
         </View> 
     )
 }
 
 const styles = StyleSheet.create({
     container: {
-      flex: 1,  // Ocupa toda la pantalla
-      justifyContent: 'center',  // Centra el contenido verticalmente
-      alignItems: 'center',  // Centra el contenido horizontalmente
-      backgroundColor: '#fff',  // Fondo blanco
+      flex: 1,  
+      justifyContent: 'center',  
+      alignItems: 'center',  
+      backgroundColor: '#fff',  
     },
     title: {
       fontSize: 24,

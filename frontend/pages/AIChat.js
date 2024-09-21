@@ -1,8 +1,9 @@
 import { useRoute } from '@react-navigation/native'
 import { useState, useEffect } from 'react'
-import { Text, ScrollView, StyleSheet, ActivityIndicator, TouchableOpacity, Modal, View, TextInput } from "react-native"
+import { Text, ScrollView, StyleSheet, ActivityIndicator, Modal, View, TextInput } from "react-native"
 import axios from 'axios'
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import MyButton from '../components/MyButton'
 
 
 export default function AIChat(){
@@ -10,7 +11,7 @@ export default function AIChat(){
     const route = useRoute() 
     const { ingredients } = route.params
     const [recipe, setRecipe] = useState(null)
-    const [preferences, setPreferences] = useState('sin gluten')
+    const { preferences } = route.params
     const [loading, setLoading] = useState(true)
     const [modalVisible, setModalVisible] = useState(false)
     const [recipeTitle, setRecipeTitle] = useState('') 
@@ -91,11 +92,9 @@ export default function AIChat(){
                         <Text style={styles.receta}>{recipe}</Text>
 
                         {/* Botón para abrir el modal */}
-                        <TouchableOpacity 
-                            style={styles.button}
-                            onPress={openModal}>
-                            <Text style={styles.buttonText}>Guardar Receta</Text>
-                        </TouchableOpacity>
+                        <MyButton 
+                            onPress={openModal}
+                            text='Guardar Receta'/>
 
                         {/* Modal para ingresar el título de la receta */}
                         <Modal
@@ -113,16 +112,14 @@ export default function AIChat(){
                                         value={recipeTitle}
                                         onChangeText={setRecipeTitle}
                                     />
-                                    <TouchableOpacity
-                                        style={styles.modalButton}
-                                        onPress={saveRecipe}>
-                                        <Text style={styles.modalButtonText}>Guardar</Text>
-                                    </TouchableOpacity>
-                                    <TouchableOpacity
+                                    <MyButton
+                                        text='Guardar'
+                                        onPress={saveRecipe}/>
+                                    <MyButton
                                         style={[styles.modalButton, styles.cancelButton]}
-                                        onPress={closeModal}>
-                                        <Text style={styles.modalButtonText}>Cancelar</Text>
-                                    </TouchableOpacity>
+                                        onPress={closeModal}
+                                        text='Cancelar'/>
+                                       
                                 </View>
                             </View>
                         </Modal>
@@ -156,17 +153,6 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
     },
-    button: {
-        backgroundColor: '#6CB089',
-        borderRadius: 8,
-        paddingVertical: 12,
-        alignItems: 'center',
-        marginTop: 20,
-    },
-    buttonText: {
-        color: '#fff',
-        fontSize: 16,
-    },
     modalContainer: {
         flex: 1,
         justifyContent: 'center',
@@ -195,20 +181,5 @@ const styles = StyleSheet.create({
         marginVertical: 10,
         width: '100%',
     },
-    modalButton: {
-        backgroundColor: '#6CB089',
-        borderRadius: 8,
-        paddingVertical: 12,
-        paddingHorizontal: 20,
-        marginTop: 10,
-        width: '100%',
-        alignItems: 'center',
-    },
-    cancelButton: {
-        backgroundColor: '#ff5c5c',
-    },
-    modalButtonText: {
-        color: '#fff',
-        fontSize: 16,
-    }
+    
 })

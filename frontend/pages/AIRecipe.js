@@ -1,7 +1,9 @@
 import { TabRouter, useNavigation } from '@react-navigation/native'
 import axios from 'axios'
 import { useEffect, useState } from 'react'
-import { View, Text, TextInput, FlatList, StyleSheet, TouchableOpacity } from "react-native"
+import { View, Text, TextInput, FlatList, StyleSheet, TouchableOpacity, ScrollView } from "react-native"
+import MyButton from '../components/MyButton'
+import BoxList from '../components/BoxList'
 
  export default function AIRecipe(){
 
@@ -9,6 +11,24 @@ import { View, Text, TextInput, FlatList, StyleSheet, TouchableOpacity } from "r
     const [filteredIngredients, setFilteredIngredients] = useState([])
     const [searchQuery, setSearchQuery] = useState('')
     const [selectedIngredients, setSelectedIngredients] = useState([])
+    const [selectedPreferences, setSelectedPreferences] = useState([])
+
+    const preferences = [
+        'Sin gluten',
+        'Diabetica',
+        'Baja en sodio',
+        'Vegetariana',
+        'Vegana',
+        'Alta en proteina',
+        'Baja en grasa',
+        'Lacteos',
+        'Huevos',
+        'Frutos secos',
+        'Pescado',
+        'Mariscos',
+        'Soja',
+        'Aditivos artificiales',
+    ]
  
 
     const navigation = useNavigation()
@@ -56,18 +76,29 @@ import { View, Text, TextInput, FlatList, StyleSheet, TouchableOpacity } from "r
         setSelectedIngredients(updatedIngredients)
     }
 
+    function togglePreference(preference){
+        setSelectedPreferences((prev) =>
+            prev.includes(preference)
+                ? prev.filter((item) => item !== preference)
+                : [...prev, preference]
+        );
+    }
+
 
     function generate() {
 
         const ingredientNames = selectedIngredients.map((ingredient) => ingredient.name);
 
-        navigation.navigate('AIChat', { ingredients: ingredientNames });
+        navigation.navigate('AIChat', { ingredients: ingredientNames, preferences: selectedPreferences });
         
     }
 
 
     return(
-        <View style={styles.container}>
+        <ScrollView style={styles.container}>
+
+            <Text>Selecciona los ingredientes que tengas</Text>
+
             <TextInput
                 style={styles.input}
                 placeholder="Search ingredients..."
@@ -90,26 +121,25 @@ import { View, Text, TextInput, FlatList, StyleSheet, TouchableOpacity } from "r
                 />
             )}
 
-            <View style={styles.selectedContainer}>
-                <Text>Ingredientes Seleccionados:</Text>
-                {selectedIngredients.map((ingredient) => (
-                    <TouchableOpacity
-                        key={ingredient.id} 
-                        onPress={() => deleteIngredient(ingredient)}
-                        style={styles.dropdownItem}
-                    >
-                        <Text style={styles.selectedItem}>
-                            {ingredient.name}
-                        </Text>
-                    </TouchableOpacity>
-                ))}
-            </View>
-            <TouchableOpacity 
-                style={styles.button}
-                onPress={generate}>
-                <Text>Generar Receta</Text>
-            </TouchableOpacity>
-        </View>
+    
+            <BoxList
+                data={selectedIngredients}
+                selectedItems={selectedIngredients}
+                toggleItem={deleteIngredient}
+            />
+
+            <Text>Preferencias y Alergenos para la receta</Text>
+
+            <BoxList
+                data={preferences}
+                selectedItems={selectedPreferences}
+                toggleItem={togglePreference}
+            />
+            <MyButton 
+                text='Generar receta'
+                onPress={generate}/>
+            
+        </ScrollView>
     )
 }
 
@@ -143,30 +173,4 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         borderBottomColor: '#eee',
     },
-    inputsContainer: {
-        paddingTop: '40%',
-        paddingHorizontal: 20
-    },
-    selectedContainer: {
-        marginVertical: 10,
-    },
-    selectedItem: {
-        fontSize: 16,
-        color: '#333',
-        fontSize: 16,
-        marginVertical: 5,
-        textAlign: 'center',
-        borderBottomColor: '#eee',
-    },
-    button: {
-        backgroundColor: '#6CB089',
-        borderRadius: 8,
-        paddingVertical: 12,
-        alignItems: 'center',
-        marginTop: 20,
-    },
-    buttonText: {
-        color: '#fff',
-        fontSize: 16,
-    }
 })
