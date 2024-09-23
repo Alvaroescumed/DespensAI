@@ -22,14 +22,6 @@ class Recipe(models.Model):
     def __str__(self):
         return self.name
 
-    
-class Preferences(models.Model):
-    user =  models.ForeignKey(User, on_delete=models.CASCADE, related_name='preferences')
-    diet = models.TextField()
-    alergies = models.TextField()
-
-    def __str__(self):
-        return f"{self.user.username} - preferences"
 
 class List(models.Model):
     

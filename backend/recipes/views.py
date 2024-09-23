@@ -78,9 +78,10 @@ class GenerateRecipe(APIView):
         if serializer.is_valid():
             ingredients = serializer.validated_data['ingredients']
             preferences = serializer.validated_data['preferences']
+            level = serializer.validated_data['level']
 
             # Llamada a la función que genera la receta
-            recipe = generate_recipe(ingredients, preferences)
+            recipe = generate_recipe(ingredients, preferences, level)
 
             return Response({'recipe': recipe}, status=status.HTTP_200_OK)
         

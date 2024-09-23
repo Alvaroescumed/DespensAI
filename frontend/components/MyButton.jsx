@@ -22,11 +22,14 @@ export default function MyButton({ onPress, text}){
 
 styles = StyleSheet.create({
     button: {
+        fontFamily: 'Nunito',
         backgroundColor: '#6CB089',
         borderRadius: 8,
         paddingVertical: 12,
-        alignItems: 'center',
-        marginTop: 20,
+        alignSelf: 'center',
+        alignItems:'center',
+        marginTop: 20, 
+        width: 200
     },
     cancelButton: {
         backgroundColor: '#ff5c5c',

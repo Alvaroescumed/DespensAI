@@ -1,6 +1,6 @@
 import axios from "axios";
-import { useState, useEffect } from "react";
-import translateText from "./translateText";
+import { useState, useEffect } from "react"
+
 
 export default function getIngredients(){
 
@@ -13,15 +13,8 @@ export default function getIngredients(){
               id: meal.idIngredient,
               name: meal.strIngredient,
             }))
-            
-            const translatedIngredients = await Promise.all(
-                ingredientList.map(async (ingredient) => {
-                  const translatedName = await translateText(ingredient.name, 'es')
-                  return { id: ingredient.id, name: translatedName }
-                })
-              )
       
-              setIngredients(translatedIngredients)
+            setIngredients(ingredientList)
           } catch (error) {
             console.error('Error al obtener los ingredientes:', error)
           }

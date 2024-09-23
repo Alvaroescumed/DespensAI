@@ -29,15 +29,17 @@ const styles = StyleSheet.create({
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.1,
         shadowRadius: 8,
-        elevation: 5, // Sombra para Android
+        elevation: 2, // Sombra para Android
     },
     recipeTitle: {
-        fontWeight: 'bold',
+        fontFamily: 'Righteous',
         color: '#6CB089',
         fontSize: 16,
         marginBottom: 5,
     },
     recipeInstructions: {
+        fontFamily: 'Nunito',
+        fontWeight: '500',
         fontSize: 14,
         color: '#555',
     },

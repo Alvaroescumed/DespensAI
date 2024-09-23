@@ -6,11 +6,12 @@ load_dotenv()
 
 api_key = os.getenv('AI_KEY')
 
-def generate_recipe(ingredients: str, preferences: str) -> str:
+def generate_recipe(ingredients: str, preferences: str, level: str) -> str:
     # Formatea el mensaje con los ingredientes y preferencias proporcionados
     prompt = (
         f"Crea una receta de cocina usando los siguientes ingredientes: {ingredients}. Usa el sitema internacional de medida "
         f"Incluyendo los pasos y el tiempo de preparación en la respuesta. Además, ten en cuenta que la receta cumpla con las siguientes preferencias y alergenos: {preferences}."
+        f"Además ten encuenta que el nivel de habilidad para la receta es {level}."
     )
 
     client = InferenceClient(

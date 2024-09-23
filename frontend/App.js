@@ -3,9 +3,15 @@ import {NavigationContainer} from '@react-navigation/native'
 import AuthStack from './navigation/AuthStack'
 import Tabs from './navigation/Tabs'
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import { useFonts } from 'expo-font'
+import AppLoading from 'expo-app-loading'
 export default function App(){
   const [isAuthenticated, setIsAuthenticated] = useState(false)
 
+  const [fontsLoaded] = useFonts({
+    'Righteous': require('./assets/fonts/Righteous.ttf'),
+    'Nunito': require('./assets/fonts/Nunito-VariableFont_wght.ttf'),
+  });
   // comprobamos que se haya iniciado sesion
   
   useEffect(() => {
@@ -19,6 +25,10 @@ export default function App(){
 
     checkToken
   }, [])
+
+  if(!fontsLoaded){
+    return <AppLoading />
+  }
 
   return(
     <NavigationContainer

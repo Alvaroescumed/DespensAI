@@ -41,9 +41,11 @@ const styles = StyleSheet.create({
     },
     selectedBox: {
         backgroundColor: '#6CB089', 
-        color: '#fff'
+        color: '#fff',
     },
     preferenceText: {
         color: '#333',
+        fontFamily: 'Nunito',
+        fontWeight: 'bold'
     },
 })

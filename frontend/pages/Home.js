@@ -1,10 +1,11 @@
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import axios from "axios"
 import {useState, useEffect, useCallback} from "react"
-import {Text, View, FlatList, TouchableOpacity, StyleSheet, Modal, ScrollView} from "react-native"
+import {Text, View, FlatList, StyleSheet, Modal, ScrollView, ActivityIndicator} from "react-native"
 import MyButton from "../components/MyButton"
 import { useFocusEffect } from "@react-navigation/native" // Hook para cuando se navega a la pagina
 import RecipeCard from "../components/RecipeCard"
+
 
 export default function Home(){
 
@@ -12,6 +13,7 @@ export default function Home(){
     const [recipes, setRecipes] = useState ([])
     const [selectedRecipe, setSelectedRecipe] = useState(null)
     const [modalVisible, setModalVisible] = useState(false)
+    const [loading, setLoading] = useState(true)
     useEffect(() => {
         async function fetchUser() {
             try {
@@ -27,11 +29,12 @@ export default function Home(){
                 })
 
                 setName(response.data.username)
-
-                console.log(name)
+               
                 
             } catch (error) {
                 console.error('Error fetching user data:', error.response ? error.response.data : error.message)
+            } finally{
+                setLoading(false)
             }
         }
 
@@ -62,14 +65,22 @@ export default function Home(){
           }
         }, []) 
       )
-    
 
     return(
-        <View style={styles.container}>
-        <Text style={{ fontSize: 20 }}>Hola de nuevo, {name}</Text>
-        <Text style={{ marginVertical: 10 }}>Estas han sido tus últimas recetas:</Text> 
+    <View style={styles.container}>
+        { loading ? (
+            <View style={styles.spinnerContainer}>
+                <ActivityIndicator size="large" color="#6CB089" />
+            </View>
+        ) : (
+            <>
+            <View  style={styles.welcomeMessage}>
+                <Text style={styles.message}>Hola de nuevo, </Text>
+                <Text style={styles.name}>{name}</Text>
+            </View>
+            <Text style={styles.message}>Estas han sido tus últimas recetas:</Text> 
 
-        <FlatList
+            <FlatList
             data={recipes}
             keyExtractor={(item) => item.id.toString()}
             renderItem={({ item }) => (
@@ -80,9 +91,9 @@ export default function Home(){
                 />
             )}
             ListEmptyComponent={<Text>No se encontraron recetas</Text>}
-        />
+            />
 
-        {selectedRecipe && (
+            {selectedRecipe && (
             <Modal
                 animationType="slide"
                 transparent={true}
@@ -92,14 +103,18 @@ export default function Home(){
                 <View style={styles.modalBackground}>
                     <ScrollView contentContainerStyle={styles.modalContent}>
                         <Text style={styles.modalTitle}>{selectedRecipe.name}</Text>
-                        <Text>{selectedRecipe.instructions}</Text>
+                        <Text style={styles.modalInstructions}>{selectedRecipe.instructions}</Text>
                         <MyButton text='cerrrar' onPress={() => setModalVisible(false)}/>
 
                     </ScrollView>
                 </View>
             </Modal>
+            )}
+            </>
         )}
+        
     </View>
+       
     )
 }
 
@@ -110,26 +125,19 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
         marginTop: 90,
     },
-    recipeContainer: {
-        backgroundColor: '#fff',
-        padding: 20,
-        marginBottom: 15,
-        borderRadius: 10,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.1,
-        shadowRadius: 8,
-        elevation: 5, // Sombra para Android
+    welcomeMessage : {
+        marginTop: 20,
+        display: 'flex',
+        flexDirection: 'row'
     },
-    recipeTitle: {
-        fontWeight: 'bold',
-        color: '#6CB089',
-        fontSize: 16,
-        marginBottom: 5,
+    name: {
+        fontFamily: 'Righteous',
+        fontSize: 26,
+        color: '#6CB089'
     },
-    recipeInstructions: {
-        fontSize: 14,
-        color: '#555',
+    message: {
+        fontFamily: 'Nunito',
+        fontSize: 24,
     },
     modalBackground: {
         flex: 1,
@@ -147,21 +155,18 @@ const styles = StyleSheet.create({
     },
     modalTitle: {
         fontSize: 18,
-        fontWeight: 'bold',
+        fontFamily: 'Righteous',
         color: '#6CB089',
         marginBottom: 15,
         textAlign: 'center',
     },
-    modalButton: {
-        backgroundColor: '#6CB089',
-        borderRadius: 8,
-        paddingVertical: 12,
-        paddingHorizontal: 20,
-        marginTop: 20,
+    modalInstructions: {
+        fontFamily: 'Nunito',
+        fontSize: 18
     },
-    modalButtonText: {
-        color: '#fff',
-        fontSize: 16,
-        fontWeight: 'bold',
-    },
+    spinnerContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    }
 })

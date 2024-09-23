@@ -12,6 +12,7 @@ import BoxList from '../components/BoxList'
     const [searchQuery, setSearchQuery] = useState('')
     const [selectedIngredients, setSelectedIngredients] = useState([])
     const [selectedPreferences, setSelectedPreferences] = useState([])
+    const [selectedLevel, setSelectedLevel] = useState([])
 
     const preferences = [
         'Sin gluten',
@@ -29,6 +30,8 @@ import BoxList from '../components/BoxList'
         'Soja',
         'Aditivos artificiales',
     ]
+
+    const level = ['Bajo', 'Medio', 'Alto']
  
 
     const navigation = useNavigation()
@@ -81,7 +84,15 @@ import BoxList from '../components/BoxList'
             prev.includes(preference)
                 ? prev.filter((item) => item !== preference)
                 : [...prev, preference]
-        );
+        )
+    }
+
+    function toggleLevel(level){
+        setSelectedLevel((prev) => 
+            prev.includes(level)
+            ? prev.filter((item) => item !== level)
+            : [...prev, level]
+        )   
     }
 
 
@@ -89,7 +100,7 @@ import BoxList from '../components/BoxList'
 
         const ingredientNames = selectedIngredients.map((ingredient) => ingredient.name);
 
-        navigation.navigate('AIChat', { ingredients: ingredientNames, preferences: selectedPreferences });
+        navigation.navigate('AIChat', { ingredients: ingredientNames, preferences: selectedPreferences, level: selectedLevel });
         
     }
 
@@ -97,7 +108,7 @@ import BoxList from '../components/BoxList'
     return(
         <ScrollView style={styles.container}>
 
-            <Text>Selecciona los ingredientes que tengas</Text>
+            <Text style={styles.label}>Selecciona los ingredientes que tengas</Text>
 
             <TextInput
                 style={styles.input}
@@ -128,12 +139,20 @@ import BoxList from '../components/BoxList'
                 toggleItem={deleteIngredient}
             />
 
-            <Text>Preferencias y Alergenos para la receta</Text>
+            <Text style={styles.label}>Preferencias y Alergenos para la receta</Text>
 
             <BoxList
                 data={preferences}
                 selectedItems={selectedPreferences}
                 toggleItem={togglePreference}
+            />
+            
+            <Text style={styles.label}>Nivel de cocina</Text>
+
+            <BoxList
+                data={level}
+                selectedItems={selectedLevel}
+                toggleItem={toggleLevel}
             />
             <MyButton 
                 text='Generar receta'
@@ -173,4 +192,10 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         borderBottomColor: '#eee',
     },
+    label: {
+        fontFamily: 'Righteous',
+        fontSize: 16,
+        marginVertical: 10,
+        color: '#6CB089'
+      }
 })

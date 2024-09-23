@@ -12,6 +12,7 @@ export default function AIChat(){
     const { ingredients } = route.params
     const [recipe, setRecipe] = useState(null)
     const { preferences } = route.params
+    const {level} = route.params
     const [loading, setLoading] = useState(true)
     const [modalVisible, setModalVisible] = useState(false)
     const [recipeTitle, setRecipeTitle] = useState('') 
@@ -23,6 +24,7 @@ export default function AIChat(){
             const res = await axios.post('http://10.0.2.2:8000/api/generaterecipe/', {
                 ingredients,
                 preferences,
+                level,
             }, {
                 headers: {
                     'Content-Type' : 'application/json'
@@ -140,11 +142,13 @@ const styles = StyleSheet.create({
         marginTop: 90
     },
     title: {
+        fontFamily: 'Righteous',
         fontSize: 24,
-        fontWeight: 'bold',
+        color: '#6CB089',
         marginBottom: 20,
     },
     receta: {
+        fontFamily: 'Nunito',
         fontSize: 18,
         marginTop: 10,
     },

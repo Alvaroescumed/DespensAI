@@ -42,6 +42,8 @@ export default function Login (){
 
     return(
         <View style={styles.container}>
+            <Text style={styles.title}>DespensAI</Text>
+            <Text style={styles.subtitle}>Rellena los siguientes campos</Text>
             <View style={styles.inputsContainer}>
                 <TextInput
                     style={styles.input}
@@ -70,9 +72,10 @@ export default function Login (){
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        padding: 16,
+        paddingVertical: '50%',
         backgroundColor: '#fff',
-        marginTop: 90
+        marginTop: 90,
+        alignItems: 'center',
     },
     input: {
         height: 40,
@@ -84,22 +87,21 @@ const styles = StyleSheet.create({
         marginVertical: 10
     },
     inputsContainer: {
-        paddingTop: '40%',
-        paddingHorizontal: 20
+        paddingVertical: 10,
+        width: 300
     },
     error: {
         color: 'red',
         marginTop: 8,
     },
-    button: {
-        backgroundColor: '#6CB089',
-        borderRadius: 8,
-        paddingVertical: 12,
-        alignItems: 'center',
-        marginTop: 20,
-    },
-    buttonText: {
-        color: '#fff',
-        fontSize: 16,
-    }
+    title: {
+        fontSize: 42,
+        marginBottom: 20,
+        fontFamily: 'Righteous',
+        color: '#6CB089'
+      },
+      subtitle:{
+        fontFamily: 'Nunito',
+        fontSize: 18
+      }
 })

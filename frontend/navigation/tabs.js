@@ -63,10 +63,7 @@ export default function Tabs (){
                 name="New"
                 component={NewRecipe}
                 options={{
-                headerShown: false,
-                tabBarButton: (props) => (
-                    <TouchableOpacity style={styles.newTabButton} {...props} />
-                ),
+                  headerShown: false,
                 }}
             />
             
@@ -81,12 +78,9 @@ export default function Tabs (){
                 name="Profile" 
                 component={Profile} 
                 options={{
-                    headerShown: false
+                  headerShown: false
                 }} 
             />
-            
-            
-
         </Tab.Navigator>
     )
 }
@@ -98,8 +92,8 @@ const styles = StyleSheet.create({
     paddingBottom: 5,
     margin:10,
     borderRadius: 20,
-    elevation: 5, // Sombra para Android
-    shadowColor: '#000', // Sombra para iOS
+    elevation: 5, 
+    shadowColor: '#000',
     shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 0.1,
     shadowRadius: 10,
@@ -118,8 +112,8 @@ const styles = StyleSheet.create({
     backgroundColor: 'tomato',
     justifyContent: 'center',
     alignItems: 'center',
-    elevation: 8, // Sombra para el botón
-    shadowColor: '#000', // Sombra para iOS
+    elevation: 8,
+    shadowColor: '#000', 
     shadowOffset: { width: 0, height: 5 },
     shadowOpacity: 0.3,
     shadowRadius: 8,

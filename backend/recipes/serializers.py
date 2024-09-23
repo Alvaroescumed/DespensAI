@@ -5,10 +5,12 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['username', 'password', 'email', 'bio', 'birth_date', 'pfp', 'location']
+        fields = '__all__'
 
     def create(self, validated_data):
         user = User(
+            first_name = validated_data['first_name'],
+            last_name = validated_data['last_name'],
             username=validated_data['username'],
             email=validated_data['email'],
             bio=validated_data.get('bio', ''),
@@ -31,10 +33,6 @@ class RecipeSerializer(serializers.ModelSerializer):
         validated_data['user'] = user
         return super().create(validated_data)
 
-class PreferencesSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Preferences
-        fields = '__all__'
 
 class ListSerializer(serializers.ModelSerializer):
     
@@ -50,5 +48,8 @@ class AIRecipeSerializer(serializers.Serializer):
         child=serializers.CharField(max_length=100)
     )
     preferences = serializers.ListField(
+        child = serializers.CharField(max_length=100)
+    )
+    level = serializers.ListField(
         child = serializers.CharField(max_length=100)
     )

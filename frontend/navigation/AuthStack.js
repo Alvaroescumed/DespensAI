@@ -18,6 +18,14 @@ export default function AuthStack(){
         <Stack.Screen 
           name="WelcomePage" 
           component={WelcomePage} 
+          options={{
+            title: '',
+            headerTransparent: true,
+            headerTintColor: '#6CB089',
+            headerStyle: {
+              backgroundColor: '#fff'
+            }
+            }} 
         />
         
         <Stack.Screen 

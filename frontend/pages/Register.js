@@ -202,7 +202,7 @@ const styles = StyleSheet.create({
         flex: 1,
         padding: 16,
         backgroundColor: '#fff',
-        paddingTop: 90
+        marginTop: 90
     },
     row: {
         flexDirection: 'row',

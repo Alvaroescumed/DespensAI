@@ -72,7 +72,7 @@ function deleteIngredient(ingredientToRemove){
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-         <View style={styles.inputContainer}>
+        <View style={styles.inputContainer}>
         <Text style={styles.label}>Nombre de la receta</Text>
         <TextInput
           style={styles.input}
@@ -127,11 +127,13 @@ function deleteIngredient(ingredientToRemove){
 
 const styles = StyleSheet.create({
   label: {
+    fontFamily: 'Righteous',
     fontSize: 16,
     marginBottom: 10,
-    color: 'green'
+    color: '#6CB089'
   },
   textArea: {
+    fontFamily: 'Nunito',
     height: 100,
     borderColor: '#ccc',
     borderWidth: 1,
@@ -141,32 +143,33 @@ const styles = StyleSheet.create({
   },
 
   container: {
-      flex: 1,
-      padding: 16,
-      backgroundColor: '#fff',
-      marginTop: 90
+    flex: 1,
+    padding: 16,
+    backgroundColor: '#fff',
+    marginTop: 90
   },
   input: {
-      height: 40,
-      borderColor: '#ccc',
-      borderWidth: 1,
-      borderRadius: 8,
-      paddingHorizontal: 10,
-      backgroundColor: '#f9f9f9',
-      marginVertical: 10
+    fontFamily: 'Nunito',
+    height: 40,
+    borderColor: '#ccc',
+    borderWidth: 1,
+    borderRadius: 8,
+    paddingHorizontal: 10,
+    backgroundColor: '#f9f9f9',
+    marginVertical: 10
   },
   dropdown: {
-      maxHeight: 200, 
-      borderColor: '#ccc',
-      borderWidth: 1,
-      borderRadius: 8,
-      marginTop: 5,
-      backgroundColor: '#fff'
+    maxHeight: 200, 
+    borderColor: '#ccc',
+    borderWidth: 1,
+    borderRadius: 8,
+    marginTop: 5,
+    backgroundColor: '#fff'
   },
   dropdownItem: {
-      padding: 10,
-      borderBottomWidth: 1,
-      textAlign: 'center',
-      borderBottomColor: '#eee',
+    padding: 10,
+    borderBottomWidth: 1,
+    textAlign: 'center',
+    borderBottomColor: '#eee',
   },
 })
