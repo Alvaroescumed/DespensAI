@@ -1,7 +1,7 @@
 import { TouchableOpacity, Text, StyleSheet } from "react-native";
 
 
-export default function ({item , setSelectedRecipe, setModalVisible}){
+export default function RecipeCard({item , setSelectedRecipe, setModalVisible}){
     return(
         <TouchableOpacity 
             style = {styles.recipeContainer}

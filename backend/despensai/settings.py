@@ -26,7 +26,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY =  os.getenv('SECRET_KEY')
+SECRET_KEY =  "django-insecure-y=zdbw*q&3o7froi6_62z_h0-msz87ejhnijx1(7&q69kl@v!s"
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -35,7 +35,6 @@ ALLOWED_HOSTS = [
     '127.0.0.1',
     'localhost',
     '192.168.1.43',  
-    os.getenv('IP'),
     '10.0.2.2'
 ]
 
@@ -102,11 +101,11 @@ WSGI_APPLICATION = "despensai.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.mysql",
-        "NAME": "despensai",
-        'USER': "root",
-        "PASSWORD": os.getenv('MYSQL_PASSWORD'),
-        "HOST": "localhost",
-        "PORT" : "3306"
+        "NAME": os.getenv('DATABASE_NAME'),
+        'USER': os.getenv('DATABASE_USER'),
+        "PASSWORD": os.getenv('DATABASE_PASSWORD'),
+        "HOST": os.getenv('DATABASE_HOST'),
+        "PORT" : os.getenv('DATABASE_PORT')
     } 
 }
 

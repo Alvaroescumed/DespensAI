@@ -24,6 +24,20 @@ class RecipeRetriveUpdate(generics.RetrieveUpdateDestroyAPIView):
     queryset = Recipe.objects.all()
     serializer_class = RecipeSerializer
 
+# --------- List -------------
+
+class ListsListCreate(generics.ListCreateAPIView):
+    queryset = List.objects.all()
+    serializer_class = ListSerializer
+
+    #asignamos que el usuario que realice la peticion es el que se registra en la receta
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user) 
+
+class ListRetriveUpdate(generics.RetrieveUpdateDestroyAPIView):
+    queryset = List.objects.all()
+    serializer_class = ListSerializer
+
 # --------  USER ----------------
 
 class UserListCreate(generics.ListCreateAPIView):

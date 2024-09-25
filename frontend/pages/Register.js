@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native'
-import { useEffect, useState } from 'react'
-import { Text, View, Button, TextInput, ScrollView, StyleSheet, TouchableOpacity, Modal } from "react-native"
+import { useState } from 'react'
+import { Text, View, ScrollView, StyleSheet, TouchableOpacity, Modal } from "react-native"
 import {Picker} from '@react-native-picker/picker'
 import DateTimePicker from '@react-native-community/datetimepicker'
 import * as ImagePicker from 'expo-image-picker'
@@ -79,9 +79,11 @@ export default function Register (){
       })
       .then((res) => {
         console.log('Usuario registrado con éxito')
+        navigation.navigate('Login')
+
       })
       .catch((error) => {
-          console.error('Error en la solicitud', error);
+          console.error('Error en la solicitud', error)
       })
     }
 

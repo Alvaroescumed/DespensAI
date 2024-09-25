@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native'
 import { useState } from 'react'
-import { Text, View, TouchableOpacity, TextInput, StyleSheet } from "react-native"
+import { Text, View, TextInput, StyleSheet } from "react-native"
 import axios from 'axios'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import MyButton from '../components/MyButton'

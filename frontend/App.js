@@ -4,9 +4,13 @@ import AuthStack from './navigation/AuthStack'
 import Tabs from './navigation/Tabs'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { useFonts } from 'expo-font'
-import AppLoading from 'expo-app-loading'
+import * as SplashScreen from 'expo-splash-screen'
+
+SplashScreen.preventAutoHideAsync()
+
 export default function App(){
   const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const [appIsReady, setAppIsReady] = useState(false)
 
   const [fontsLoaded] = useFonts({
     'Righteous': require('./assets/fonts/Righteous.ttf'),
@@ -15,19 +19,30 @@ export default function App(){
   // comprobamos que se haya iniciado sesion
   
   useEffect(() => {
-    async function checkToken() {
-      const token = await AsyncStorage.getItem('userToken')
-
-      if(token){
-        setIsAuthenticated(true)
+    async function prepareApp() {
+      try {
+        const token = await AsyncStorage.getItem('userToken')
+        if (token) {
+          setIsAuthenticated(true);
+        }
+      } catch (e) {
+        console.warn(e)
+      } finally {
+        if (fontsLoaded) {
+          setAppIsReady(true)
+          SplashScreen.hideAsync()
+        }
       }
     }
 
-    checkToken
-  }, [])
+    if (fontsLoaded) {
+      prepareApp()
+    }
 
-  if(!fontsLoaded){
-    return <AppLoading />
+  }, [fontsLoaded])
+
+  if (!appIsReady) {
+    return null
   }
 
   return(

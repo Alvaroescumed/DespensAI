@@ -38,9 +38,15 @@ class ListSerializer(serializers.ModelSerializer):
     
     recipes = RecipeSerializer(many=True, read_only=True)
 
+
     class Meta:
         model = List
-        fields = '__all__'
+        exclude = ['user']
+
+    def create(self, validated_data):
+        user = self.context['request'].user
+        validated_data['user'] = user
+        return super().create(validated_data)
 
 
 class AIRecipeSerializer(serializers.Serializer):
